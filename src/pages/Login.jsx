@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const [role, setRole] = useState("mentee");
@@ -7,31 +9,24 @@ export default function LoginForm() {
   const [userPassword, setUserPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     
-    const res = await fetch(`http://localhost:8080/api/${role}s/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        "email": userEmail,
-        "password": userPassword
-      }),
-    })
+    try {
+      const response = await axios.post("http://localhost:8080/api/mentees/login", {
+        email: "kunio.saiki2@darkreunion.org",
+        password: "password123"
+      });
 
-    // const data = await res.json()
-    console.log(res)
-    // if (res.status !== 200) {
-    //   setErrorMessage(data.message)
-    //   return
-    // }
-
-    // alert(data)
-    
-    // if (data.token) {
-    //   localStorage.setItem('token', data.token)
-    //   navigate('/dashboard')
-    // }
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      navigate("/dashboard"); 
+    } catch (error) {
+      setErrorMessage("Login gagal. Silakan coba lagi.");
+      console.error("Error login:", error.response?.data || "Login gagal");
+    }
   }
 
   return (
@@ -81,6 +76,7 @@ export default function LoginForm() {
           </div>
 
           <form className="space-y-6">
+            <p>{errorMessage}</p>
             <div>
               <label
                 htmlFor="email"
