@@ -3,6 +3,37 @@ import { useState } from "react";
 export default function LoginForm() {
   const [role, setRole] = useState("mentee");
 
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
+    const res = await fetch(`http://localhost:8080/api/${role}s/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        "email": userEmail,
+        "password": userPassword
+      }),
+    })
+
+    // const data = await res.json()
+    console.log(res)
+    // if (res.status !== 200) {
+    //   setErrorMessage(data.message)
+    //   return
+    // }
+
+    // alert(data)
+    
+    // if (data.token) {
+    //   localStorage.setItem('token', data.token)
+    //   navigate('/dashboard')
+    // }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
@@ -62,6 +93,7 @@ export default function LoginForm() {
                 type="email"
                 placeholder="you@example.com"
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => setUserEmail(e.target.value)}
               />
             </div>
 
@@ -77,12 +109,15 @@ export default function LoginForm() {
                 type="password"
                 placeholder="••••••••"
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => setUserPassword(e.target.value)}
+                value={userPassword}
               />
             </div>
 
             <button
               type="submit"
               className="w-full py-3 px-6 text-white bg-blue hover:bg-blue-dark rounded-lg font-semibold shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={handleLogin}
             >
               {`Masuk sebagai ${role.charAt(0).toUpperCase() + role.slice(1)}`}
             </button>
@@ -92,7 +127,7 @@ export default function LoginForm() {
                 Lupa Password?
               </a>
               <br />
-              <a href="./register.html" className="text-blue-500 hover:underline">
+              <a href="./register" className="text-blue-500 hover:underline">
                 Belum punya akun? Daftar!
               </a>
             </div>
