@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import './App.css';
-import Header from './header.jsx'; 
-import SearchBar from './SearchBar.jsx';
-import TutorCard from './TutorCard.jsx';
-import TutorList from './TutorList.jsx';
-import Login from './Login.jsx';
+import Header from './components/Header.jsx'; 
+import SearchBar from "@/components/SearchBar.jsx";
+import TutorList from "@/components/Tutor/TutorList.jsx";
+import Login from '@/components/Login.jsx';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

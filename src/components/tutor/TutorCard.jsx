@@ -3,7 +3,7 @@ const TutorCard = ({ image, name, subjects }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
       <img
-        src={image}
+        src={`/public/images/${image}`}
         alt={name}
         className="rounded-lg w-full h-40 object-cover"
       />
