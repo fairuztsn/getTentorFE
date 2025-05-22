@@ -9,7 +9,7 @@ export default function LoginForm() {
         {/* Left Image */}
         <div
           className="bg-blue hidden lg:block lg:w-1/2 bg-cover bg-center"
-          style={{ backgroundImage: "url('src/assets/Frame 7.png')" }}
+          style={{ backgroundImage: "url('/Frame 7.png')" }}
         ></div>
 
         {/* Right Login Form */}
