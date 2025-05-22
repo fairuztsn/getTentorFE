@@ -15,9 +15,9 @@ export default function LoginForm() {
     e.preventDefault();
     
     try {
-      const response = await axios.post("http://localhost:8080/api/mentees/login", {
-        email: "kunio.saiki2@darkreunion.org",
-        password: "password123"
+      const response = await axios.post(`http://localhost:8080/api/${role}s/login`, {
+        email: userEmail,
+        password: userPassword
       });
 
       const token = response.data.token;
