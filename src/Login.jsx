@@ -5,18 +5,22 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
         {/* Left Image */}
-        <div
-          className="bg-blue hidden lg:block lg:w-1/2 bg-cover bg-center"
-          style={{ backgroundImage: "url('/Frame 7.png')" }}
-        ></div>
+        <div className="hidden lg:block lg:w-1/2 overflow-hidden rounded-l-2xl h-auto">
+          <img
+            src="/Frame 7.png"
+            alt="Login Illustration"
+            className="bg-blue w-full h-full object-cover"
+            style={{ minHeight: "100%" }}
+          />
+        </div>
 
         {/* Right Login Form */}
-        <div className="w-full lg:w-1/2 p-8 md:p-12">
-            <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
+        <div className="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+          <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
             Selamat Datang
-            </h1>
+          </h1>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Login ke Akun Anda
           </h2>
@@ -24,13 +28,21 @@ export default function LoginForm() {
           {/* Role Tabs */}
           <div className="flex justify-center space-x-8 border-b mb-8">
             <div
-              className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${role === "mentee" ? "text-black border-b-2 border-blue-500" : "text-gray-500 border-b-2 border-gray-300"}`}
+              className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${
+                role === "mentee"
+                  ? "text-black border-b-2 border-blue-500"
+                  : "text-gray-500 border-b-2 border-gray-300"
+              }`}
               onClick={() => setRole("mentee")}
             >
               Mentee
             </div>
             <div
-              className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${role === "tentor" ? "text-black border-b-2 border-blue-500" : "text-gray-500 border-b-2 border-gray-300"}`}
+              className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${
+                role === "tentor"
+                  ? "text-black border-b-2 border-blue-500"
+                  : "text-gray-500 border-b-2 border-gray-300"
+              }`}
               onClick={() => setRole("tentor")}
             >
               Tentor
@@ -39,7 +51,10 @@ export default function LoginForm() {
 
           <form className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <input
@@ -51,7 +66,10 @@ export default function LoginForm() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Kata Sandi
               </label>
               <input
