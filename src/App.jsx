@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Dashboard from '@/pages/Dashboard';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DetailPost from './pages/DetailPost';
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             </PrivateRoute>
           }
         />
+              <Route
+          path="/detail-post"
+          element={
+            <PrivateRoute>
+              <DetailPost />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
@@ -27,3 +36,4 @@ function App() {
 }
 
 export default App;
+
