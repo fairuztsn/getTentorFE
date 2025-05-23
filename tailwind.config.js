@@ -9,6 +9,7 @@ export default {
       colors: {
         blue: '#3674B5',
         'blue-dark': '#2e6394',
+        'blue-light': '#b7e1fa',
       },
     },
   },

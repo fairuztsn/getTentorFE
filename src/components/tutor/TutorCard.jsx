@@ -1,4 +1,3 @@
-// src/components/TutorCard.jsx
 const TutorCard = ({ image, name, subjects }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
@@ -15,14 +14,14 @@ const TutorCard = ({ image, name, subjects }) => {
         {subjects.slice(0, 3).map((subject, idx) => (
           <span
             key={idx}
-            className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded max-w-[80px] truncate"
+            className="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded max-w-[80px] truncate"
           >
             {subject}
           </span>
         ))}
 
         {subjects.length > 3 && (
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+          <span className="text-xs bg-sky-100 text-sky-800 px-2 py-1 rounded">
             +{subjects.length - 3} lainnya
           </span>
         )}
@@ -32,7 +31,7 @@ const TutorCard = ({ image, name, subjects }) => {
       <div className="mt-2 text-sm">⭐ 5.0/5.0</div>
 
       {/* Action Button */}
-      <button className="mt-auto w-full bg-blue-500 text-white py-1 rounded hover:bg-blue-600">
+      <button className="mt-auto w-full bg-sky-500 text-white py-1 rounded hover:bg-sky-600">
         Lihat Tentor
       </button>
     </div>
