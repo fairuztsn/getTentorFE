@@ -22,7 +22,7 @@ export default function LoginForm() {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      navigate("/dashboard"); 
+      navigate("/"); 
     } catch (error) {
       setErrorMessage("Login gagal. Silakan coba lagi.");
       console.error("Error login:", error.response?.data || "Login gagal");
