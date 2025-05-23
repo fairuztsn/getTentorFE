@@ -22,7 +22,7 @@ export default function LoginForm() {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      navigate("/"); 
+      navigate("/detail-post"); 
     } catch (error) {
       setErrorMessage("Login gagal. Silakan coba lagi.");
       console.error("Error login:", error.response?.data || "Login gagal");
@@ -33,7 +33,7 @@ export default function LoginForm() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
         {/* Left Image */}
-        <div className="hidden lg:block lg:w-1/2 overflow-hidden rounded-l-2xl h-auto">
+        <div className="hidden lg:block lg:w-1/2 overflow-hidden rounded-l-4xl h-auto">
           <img
             src={`/public/images/Frame 7.png`}
             alt="Login Illustration"
