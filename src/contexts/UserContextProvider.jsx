@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
                 email: decoded.email,
                 role: decoded.role,
                 name: decoded.nama,
-                fotoUrl: res.data.fotoUrl
+                fotoUrl: res.data.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png'
               });
               setLoading(false);
             })
