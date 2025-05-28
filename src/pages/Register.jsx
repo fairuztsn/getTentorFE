@@ -25,8 +25,16 @@ export default function RegisterForm() {
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
+  
     if (e.target.type === "file") {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      const file = files[0];
+  
+      if (file && !file.type.startsWith("image/")) {
+        setErrorMessage("Hanya file gambar yang diperbolehkan.");
+        return;
+      }
+  
+      setFormData(prev => ({ ...prev, [name]: file }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -77,24 +85,51 @@ export default function RegisterForm() {
         password: formData.password,
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
-        pengalaman: formData.experience // TODO: Handle delimeter or toList or toString
+        pengalaman: formData.experience.split("|") // TODO: Handle delimeter or toList or toString
       };
+  
+      // 1. Register dulu
+      const registerResponse = await axios.post(
+        `http://localhost:8080/api/${role}s/register`,
+        requestData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+  
+      // 2. Ambil token
+      const token = registerResponse.data.token;
+  
+      // 3. Upload image if Tentor dan ada file
+      // TODO: If tentor and profile pict null then pake default image
+      if (role === "tentor" && formData.profilePicture) {
+        const formToUpdate = new FormData();
+        formToUpdate.append("file", formData.profilePicture);
+  
+        await axios.put(
+          'http://localhost:8080/api/tentors/update-profile',
+          formToUpdate,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
+      }
+  
+      // 4. Simpen token
+      localStorage.setItem("token", token);
 
-      console.log(requestData)
-
-      const response = await axios.post(`http://localhost:8080/api/${role}s/register`, requestData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
+      // 5. Redirect success
       setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman login...");
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
       }, 2000);
+  
     } catch (error) {
-      const message = error.response?.data?.message || "Registrasi gagal. Silakan coba lagi.";
+      const message =
+        error.response?.data?.error || error.message || "Registrasi gagal. Silakan coba lagi.";
       setErrorMessage(message);
     }
-  };
+  };  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-start justify-center px-4 py-8">
