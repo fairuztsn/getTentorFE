@@ -95,6 +95,8 @@ const removeExperienceField = (index) => {
 
   const handleFinalRegister = async () => {
     try {
+      // Default profile image
+      const DEFAULT_PROFILE_URL = "/public/images/default-profile.png";
       const requestData = {
         nim: formData.nim,
         nama: formData.fullName,
@@ -102,7 +104,8 @@ const removeExperienceField = (index) => {
         password: formData.password,
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
-        pengalaman: formData.experience.split("|") // TODO: Handle delimeter or toList or toString
+        pengalaman: formData.experience.split("|"), // TODO: Handle delimeter or toList or toString
+        profilePicture: formData.profilePicture ? null : DEFAULT_PROFILE_URL // hanya kirim default jika tidak upload
       };
   
       // 1. Register dulu
@@ -117,7 +120,7 @@ const removeExperienceField = (index) => {
   
       // 3. Upload image if Tentor dan ada file
       // TODO: If tentor and profile pict null then pake default image
-      if (role === "tentor" && formData.profilePicture) {
+      if (role === "tentor" && formData.profilePicture && requestData.profilePicture === null) {
         const formToUpdate = new FormData();
         formToUpdate.append("file", formData.profilePicture);
   
