@@ -30,7 +30,13 @@ export const UserProvider = ({ children }) => {
               },
             })
             .then((res) => {
-              setUser(res.data);
+              setUser({
+                id: decoded.id,
+                email: decoded.email,
+                role: decoded.role,
+                name: decoded.nama,
+                fotoUrl: res.data.fotoUrl
+              });
               setLoading(false);
             })
             .catch((err) => {
