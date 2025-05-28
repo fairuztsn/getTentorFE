@@ -52,7 +52,7 @@ const TutorList = () => {
       <h2 className="text-xl font-semibold mb-4 text-blue">Tentor Tersedia</h2>
       <div className="flex flex-wrap gap-6">
         {tentors.map((tentor, idx) => (
-          <TutorCard key={idx} image={tentor.fotoUrl} name={tentor.nama} subjects={['Lorem', 'Ipsum']}/>
+          <TutorCard key={idx} id={tentor.id} image={tentor.fotoUrl} name={tentor.nama} subjects={['Lorem', 'Ipsum']}/>
         ))}
       </div>
     </section>

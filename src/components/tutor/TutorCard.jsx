@@ -1,5 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 // src/components/TutorCard.jsx
-const TutorCard = ({ image, name, subjects }) => {
+const TutorCard = ({ id, image, name, subjects }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
       <img
@@ -32,7 +35,7 @@ const TutorCard = ({ image, name, subjects }) => {
       <div className="mt-2 text-sm">⭐ 5.0/5.0</div>
 
       {/* Action Button */}
-      <button className="mt-auto w-full bg-blue text-white py-1 rounded hover:bg-blue-600" onClick={() => alert('OK')}>
+      <button className="mt-auto w-full bg-blue text-white py-1 rounded hover:bg-blue-600" onClick={() => navigate(`/tentor/${id}`)}>
         Lihat Tentor
       </button>
     </div>

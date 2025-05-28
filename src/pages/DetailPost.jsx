@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 // Dummy user login (ubah ke null jika ingin simulasi user belum login)
 const dummyUser = {
@@ -10,8 +12,41 @@ const dummyUser = {
 };
 
 export default function TutorProfile() {
+  const { id } = useParams();
+  const [tentor, setTentor] = useState(null);
+
+  useEffect(() => {
+    const fetchTentorData = async() => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/tentors/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const data = response.data;
+        setTentor({
+          name: data.mahasiswa.nama,
+          position: "Principal Software Engineer Manager @ Microsoft",
+          experience: "5+ years of experience in software development",
+          rating: data.averageRating,// "5.0 (254 Reviews)",
+          location: "Jakarta - Kelapa Gading",
+          email: data.email,
+          phone: data.noTelp,
+          about: "With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
+          skills: ["Lorem", "Ipsum"],
+          profilePictureUrl: data.fotoUrl,
+        });
+      } catch (error) {
+        alert('Error! Baca console pls');
+        console.error(error);
+      }
+    }
+
+    fetchTentorData();
+  }, []);
+  
   const navigate = useNavigate();
-  const currentUser = dummyUser; // Set to null if simulating no login
+  
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -21,18 +56,6 @@ export default function TutorProfile() {
   });
   const [visibleReviews, setVisibleReviews] = useState(1);
   const reviewsPerLoad = 2;
-
-  const tutor = {
-    name: "Ellen Joe",
-    position: "Principal Software Engineer Manager @ Microsoft",
-    experience: "5+ years of experience in software development",
-    rating: "5.0 (254 Reviews)",
-    location: "Jakarta - Kelapa Gading",
-    email: "littlesharkgirl@gmail.com",
-    phone: "0232587347",
-    about: "With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
-    skills: ["PBO", "JARKOM"],
-  };
 
   const initialReviews = [
     {
@@ -76,8 +99,8 @@ export default function TutorProfile() {
   const [reviews, setReviews] = useState(initialReviews);
 
   const maxLength = 150;
-  const canExpand = tutor.about.length > maxLength;
-  const displayText = isExpanded ? tutor.about : `${tutor.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
+  const canExpand = true; //tentor?.about?.length > maxLength;
+  // const displayText = isExpanded ? tentor?.about : `${tentor?.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,7 +154,7 @@ export default function TutorProfile() {
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, visibleReviews);
 
   return (
-    <div className="bg-[url('/images/carthe2.png')] bg-cover bg-center font-sans">
+    <div className="bg-white bg-cover bg-center font-sans">
       <Header />
       <div className="max-w-4xl mx-auto">
         <div className="relative">
@@ -139,7 +162,7 @@ export default function TutorProfile() {
           <div className="relative flex items-start px-4 pt-4 pb-8 gap-6">
             <div className="relative -mt-[-20px]">
               <img
-                src="/images/ellenjoe.png"
+                src={tentor?.profilePictureUrl}
                 alt="Profile"
                 className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-white shadow-lg z-10"
               />
@@ -159,15 +182,16 @@ export default function TutorProfile() {
           <div className="border rounded-xl p-6 shadow bg-white/50 backdrop-blur-sm">
             <div className="space-y-6">
               <div>
-                <h1 className="text-2xl font-bold">{tutor.name}</h1>
-                <p className="text-blue-600 hover:underline text-base">{tutor.position}</p>
-                <p className="text-base text-gray-500">{tutor.experience}</p>
+                <h1 className="text-2xl font-bold">{tentor?.name}</h1>
+                <p className="text-blue-600 hover:underline text-base">{tentor?.position}</p>
+                <p className="text-base text-gray-500">{tentor?.experience}</p>
               </div>
               <div className="space-y-3">
-                <p>⭐ {tutor.rating}</p>
-                <p>📍 {tutor.location}</p>
-                <p>📧 {tutor.email}</p>
-                <p>📞 {tutor.phone}</p>
+                <p>⭐ {tentor?.rating}</p>
+                <p>📧<a href={`mailto:${tentor?.email}`} className="text-blue-600 underline">
+                   {tentor?.email}
+                </a></p>
+                <p>📞 {tentor?.phone}</p>
               </div>
             </div>
           </div>
@@ -175,7 +199,7 @@ export default function TutorProfile() {
           <div className="space-y-6">
             <div className="flex items-center gap-4 flex-wrap">
               <img src="/images/book.png" alt="Skills" className="h-10 w-10" />
-              {tutor.skills.map((skill, index) => (
+              {tentor?.skills.map((skill, index) => (
                 <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200 text-sm bg-white/50 backdrop-blur-sm">
                   {skill}
                 </span>
@@ -187,7 +211,7 @@ export default function TutorProfile() {
               <div className={`text-gray-700 text-base leading-relaxed transition-all duration-300 ${
                 isExpanded ? 'max-h-[400px] overflow-y-auto' : 'max-h-[120px] overflow-hidden'
               }`}>
-                {tutor.about}
+                {tentor?.about}
               </div>
               {canExpand && (
                 <button onClick={() => setIsExpanded(!isExpanded)} className="text-blue-600 hover:text-blue-800 font-medium text-sm mt-2 absolute bottom-2 right-4 bg-white/80 px-3 py-1 rounded-full">
@@ -252,7 +276,7 @@ export default function TutorProfile() {
                   value={newReview.comment}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded h-24"
-                  placeholder="Share your experience with this tutor..."
+                  placeholder="Share your experience with this tentor?..."
                   required
                 />
               </div>
