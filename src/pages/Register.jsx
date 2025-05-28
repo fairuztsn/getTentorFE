@@ -97,6 +97,8 @@ const removeExperienceField = (index) => {
     try {
       // Default profile image
       const DEFAULT_PROFILE_URL = "/public/images/default-profile.png";
+      const isUploading = !!formData.profilePicture;
+
       const requestData = {
         nim: formData.nim,
         nama: formData.fullName,
@@ -104,10 +106,10 @@ const removeExperienceField = (index) => {
         password: formData.password,
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
-        pengalaman: formData.experience.split("|"), // TODO: Handle delimeter or toList or toString
-        profilePicture: formData.profilePicture ? null : DEFAULT_PROFILE_URL // hanya kirim default jika tidak upload
+        pengalaman: formData.experience.map(e => e.trim()), // TODO: Handle delimeter or toList or toString
+        profilePicture: isUploading ? formData.profilePicture.name : DEFAULT_PROFILE_URL,
       };
-  
+
       // 1. Register dulu
       const registerResponse = await axios.post(
         `http://localhost:8080/api/${role}s/register`,
@@ -120,7 +122,7 @@ const removeExperienceField = (index) => {
   
       // 3. Upload image if Tentor dan ada file
       // TODO: If tentor and profile pict null then pake default image
-      if (role === "tentor" && formData.profilePicture && requestData.profilePicture === null) {
+      if (role === "tentor" && isUploading) {
         const formToUpdate = new FormData();
         formToUpdate.append("file", formData.profilePicture);
   
@@ -139,7 +141,7 @@ const removeExperienceField = (index) => {
       localStorage.setItem("token", token);
 
       // 5. Redirect success
-      setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman login...");
+      setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman dashboard...");
       setTimeout(() => {
         navigate("/");
       }, 2000);
