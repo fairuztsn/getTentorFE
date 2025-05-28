@@ -42,7 +42,7 @@ export default function TutorProfile() {
   const displayText = isExpanded ? tutor.about : `${tutor.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   return (
-    <div className="bg-[url('/images/carthe2.png')] bg-cover bg-center font-sans">
+    <div className="bg-white bg-cover bg-center font-sans">
       <Header />
       
       {/* Container utama tanpa padding atas */}
