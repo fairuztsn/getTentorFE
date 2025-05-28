@@ -15,7 +15,7 @@ export default function RegisterForm() {
     confirmPassword: "",
     phoneNumber: "",
     gpa: "",
-    experience: "",
+    experience: [""],
     profilePicture: null,
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -67,6 +67,23 @@ export default function RegisterForm() {
       handleFinalRegister();
     }
   };
+
+  const handleExperienceChange = (index, value) => {
+  const updatedExperience = [...formData.experience];
+  updatedExperience[index] = value;
+    setFormData(prev => ({ ...prev, experience: updatedExperience }));
+};
+
+const addExperienceField = () => {
+    setFormData(prev => ({ ...prev, experience: [...prev.experience, ""] }));
+};
+
+const removeExperienceField = (index) => {
+    const updatedExperience = [...formData.experience];
+    updatedExperience.splice(index, 1);
+    setFormData(prev => ({ ...prev, experience: updatedExperience }));
+};
+
 
   const handleFinalRegister = async () => {
     try {
@@ -253,16 +270,36 @@ export default function RegisterForm() {
                 </div>
 
                 <div>
-                  <label htmlFor="experience" className="block text-sm font-medium text-gray-700">Pengalaman Mengajar</label>
-                  <textarea
-                    id="experience"
-                    name="experience"
-                    className="mt-1 w-full px-4 py-2 border rounded-lg"
-                    placeholder="Ceritakan pengalaman Anda..."
-                    value={formData.experience}
-                    onChange={handleInputChange}
-                  />
+                  <label className="block text-sm font-medium text-gray-700">Pengalaman Mengajar</label>
+                  {formData.experience.map((exp, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                      <input
+                        type="text"
+                        className="w-full px-4 py-2 border rounded-lg"
+                        placeholder={`Pengalaman ${index + 1}`}
+                        value={exp}
+                        onChange={(e) => handleExperienceChange(index, e.target.value)}
+                      />
+                      {formData.experience.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeExperienceField(index)}
+                          className="ml-2 text-red-500 font-bold"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addExperienceField}
+                    className="mt-1 text-blue-500 text-sm hover:underline"
+                  >
+                    + Tambah pengalaman
+                  </button>
                 </div>
+
 
                 <div>
                   <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">Foto Profil</label>
