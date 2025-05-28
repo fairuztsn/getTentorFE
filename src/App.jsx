@@ -32,13 +32,11 @@ function App() {
                 <Dashboard />
               </PrivateRoute>
             }/>
-          <Route
-          path="/detail-post"
-          element={
+          <Route path="/tentor/:id" element={
             <PrivateRoute>
               <DetailPost />
             </PrivateRoute>
-          }/>
+          } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </UserProvider>
