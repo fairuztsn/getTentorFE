@@ -8,38 +8,41 @@ import Dashboard from '@/pages/Dashboard';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DetailPost from './pages/DetailPost';
+import { UserProvider } from "@/contexts/UserContextProvider.jsx";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>} />
-        <Route
-          path="/"
+      <UserProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register/>} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }/>
+          <Route
+          path="/detail-post"
           element={
             <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Dashboard />
+              <DetailPost />
             </PrivateRoute>
           }/>
-        <Route
-        path="/detail-post"
-        element={
-          <PrivateRoute>
-            <DetailPost />
-          </PrivateRoute>
-        }/>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </UserProvider>
+  </BrowserRouter>
   );
 }
 
