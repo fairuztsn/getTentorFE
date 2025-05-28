@@ -3,6 +3,21 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 const isNumeric = (str) => !isNaN(str);
+const isValidEmail = (email) => {
+  // Format: Simple regex untuk pengecekan email basic
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const isValidPhoneNumber = (number) => {
+  // Format: 08xxxxxxxxxx, hanya angka, panjang 10-12 karakter
+  return /^[0-9]{10,12}$/.test(number);
+};
+
+const isValidGPA = (gpa) => {
+  // Hanya angka desimal dari 0.0 sampai 4.0, maksimal dua angka di belakang koma
+  return /^([0-3](\.\d{1,2})?|4(\.0{1,2})?)$/.test(gpa);
+};
+
 
 export default function RegisterForm() {
   const [role, setRole] = useState("mentee");
@@ -44,8 +59,18 @@ export default function RegisterForm() {
     e.preventDefault();
     setErrorMessage("");
 
-    if(!isNumeric(formData.nim)) {
-      setErrorMessage("NIM harus berupa angka.");
+    if (!isNumeric(formData.nim) || parseInt(formData.nim) <= 0) {
+      setErrorMessage("NIM harus berupa angka positif.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setErrorMessage("Format email tidak valid.");
+      return;
+    }
+
+    if (!isValidPhoneNumber(formData.phoneNumber)) {
+      setErrorMessage("Nomor telepon tidak valid. Gunakan 10-13 digit angka.");
       return;
     }
 
@@ -90,6 +115,23 @@ const removeExperienceField = (index) => {
 
   const handleFinalRegister = async () => {
     try {
+      if (role === "tentor") {
+        // Validasi Format input GPA
+        if (!isValidGPA(formData.gpa)) {
+          setErrorMessage("IPK harus berupa angka antara 0.0 hingga 4.0.");
+          return;
+        }
+        // Validasi pengalaman hanya jika ada lebih dari satu field pengalaman
+        if (formData.experience.length > 1) {
+          const emptyExperience = formData.experience.some(exp => !exp.trim());
+          if (emptyExperience) {
+            setErrorMessage("Harap lengkapi semua kolom pengalaman mengajar. Jika tidak ingin mengisi sama sekali, hapus kolom tambahan yang kosong.");
+            return;
+          }
+        }
+
+
+      }
       const requestData = {
         nim: formData.nim,
         nama: formData.fullName,
@@ -165,7 +207,7 @@ const removeExperienceField = (index) => {
                 key={r}
                 className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${
                   role === r
-                    ? "text-black border-b-2 border-blue-500"
+                    ? "text-black border-b-2 border-blue"
                     : "text-gray-500 border-b-2 border-gray-300"
                 }`}
                 onClick={() => {
@@ -354,9 +396,9 @@ const removeExperienceField = (index) => {
               </>
             )}
 
-            <div className="text-sm text-center text-gray-600">
+            <div className="text-m text-center text-gray-600">
               <span>Sudah punya akun? </span>
-              <a href="./login" className="text-blue-500 hover:underline">Masuk di sini!</a>
+              <a href="./login" className="text-blue hover:underline">Masuk di sini!</a>
             </div>
           </div>
         </div>
