@@ -49,11 +49,6 @@ export default function RegisterForm() {
       return;
     }
 
-    if(!isNumeric(formData.phoneNumber)) {
-      setErrorMessage("Nomor telepon harus berupa angka.");
-      return;
-    }
-
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
       setErrorMessage("Semua field harus diisi.");
       return;
@@ -95,10 +90,6 @@ const removeExperienceField = (index) => {
 
   const handleFinalRegister = async () => {
     try {
-      // Default profile image
-      const DEFAULT_PROFILE_URL = "/public/images/default-profile.png";
-      const isUploading = !!formData.profilePicture;
-
       const requestData = {
         nim: formData.nim,
         nama: formData.fullName,
@@ -107,7 +98,6 @@ const removeExperienceField = (index) => {
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
         pengalaman: formData.experience.map(e => e.trim()), // TODO: Handle delimeter or toList or toString
-        profilePicture: isUploading ? formData.profilePicture.name : DEFAULT_PROFILE_URL,
       };
 
       // 1. Register dulu
@@ -122,7 +112,7 @@ const removeExperienceField = (index) => {
   
       // 3. Upload image if Tentor dan ada file
       // TODO: If tentor and profile pict null then pake default image
-      if (role === "tentor" && isUploading) {
+      if (role === "tentor" && formData.profilePicture && formData.profilePicture instanceof File) {
         const formToUpdate = new FormData();
         formToUpdate.append("file", formData.profilePicture);
   
@@ -255,6 +245,7 @@ const removeExperienceField = (index) => {
                     placeholder="08xxxxxxxxxx"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
+                    maxLength={12}
                   />
                 </div>
 
