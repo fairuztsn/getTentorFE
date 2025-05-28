@@ -8,7 +8,9 @@ export default {
       },
       colors: {
         blue: '#3674B5',
-        'blue-dark': '#2e6394',
+        'blue-dark': '#3674b5',
+        'light-blue': '#A1E3F9',
+        'cyan':"#D1f8EF"
       },
     },
   },
