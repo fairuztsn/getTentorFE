@@ -2,10 +2,13 @@ import { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+const isNumeric = (str) => !isNaN(str);
+
 export default function RegisterForm() {
   const [role, setRole] = useState("mentee");
   const [showTentorExtraForm, setShowTentorExtraForm] = useState(false);
   const [formData, setFormData] = useState({
+    nim: "",
     fullName: "",
     email: "",
     password: "",
@@ -33,6 +36,16 @@ export default function RegisterForm() {
     e.preventDefault();
     setErrorMessage("");
 
+    if(!isNumeric(formData.nim)) {
+      setErrorMessage("NIM harus berupa angka.");
+      return;
+    }
+
+    if(!isNumeric(formData.phoneNumber)) {
+      setErrorMessage("Nomor telepon harus berupa angka.");
+      return;
+    }
+
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
       setErrorMessage("Semua field harus diisi.");
       return;
@@ -57,13 +70,20 @@ export default function RegisterForm() {
 
   const handleFinalRegister = async () => {
     try {
-      const finalData = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value) finalData.append(key, value);
-      });
+      const requestData = {
+        nim: formData.nim,
+        nama: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        noTelp: formData.phoneNumber,
+        ipk: formData.gpa,
+        pengalaman: formData.experience // TODO: Handle delimeter or toList or toString
+      };
 
-      const response = await axios.post(`http://localhost:8080/api/${role}s/register`, finalData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      console.log(requestData)
+
+      const response = await axios.post(`http://localhost:8080/api/${role}s/register`, requestData, {
+        headers: { 'Content-Type': 'application/json' }
       });
 
       setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman login...");
@@ -126,6 +146,20 @@ export default function RegisterForm() {
 
             {!showTentorExtraForm ? (
               <>
+              <div>
+                  <label htmlFor="nim" className="block text-sm font-medium text-gray-700">NIM</label>
+                  <input
+                    id="nim"
+                    name="nim"
+                    type="number"
+                    className="mt-1 w-full px-4 py-2 border rounded-lg"
+                    placeholder="Masukkan NIM"
+                    value={formData.nim}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                
                 <div>
                   <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                   <input

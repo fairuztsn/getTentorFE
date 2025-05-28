@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '@/App.css';
 import Login from '@/pages/Login.jsx';
+import Register from '@/pages/Register.jsx';
 import NotFound from '@/components/errors/NotFound.jsx';
 import PrivateRoute from './components/PrivateRoute';
 import Dashboard from '@/pages/Dashboard';
@@ -13,6 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>} />
         <Route
           path="/"
           element={
@@ -21,14 +23,20 @@ function App() {
             </PrivateRoute>
           }
         />
-              <Route
-          path="/detail-post"
+        <Route
+          path="/"
           element={
             <PrivateRoute>
-              <DetailPost />
+              <Dashboard />
             </PrivateRoute>
-          }
-        />
+          }/>
+        <Route
+        path="/detail-post"
+        element={
+          <PrivateRoute>
+            <DetailPost />
+          </PrivateRoute>
+        }/>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
