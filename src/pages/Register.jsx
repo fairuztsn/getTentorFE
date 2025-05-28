@@ -15,7 +15,7 @@ export default function RegisterForm() {
     confirmPassword: "",
     phoneNumber: "",
     gpa: "",
-    experience: "",
+    experience: [""],
     profilePicture: null,
   });
   const [errorMessage, setErrorMessage] = useState("");
@@ -49,11 +49,6 @@ export default function RegisterForm() {
       return;
     }
 
-    if(!isNumeric(formData.phoneNumber)) {
-      setErrorMessage("Nomor telepon harus berupa angka.");
-      return;
-    }
-
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
       setErrorMessage("Semua field harus diisi.");
       return;
@@ -76,6 +71,23 @@ export default function RegisterForm() {
     }
   };
 
+  const handleExperienceChange = (index, value) => {
+  const updatedExperience = [...formData.experience];
+  updatedExperience[index] = value;
+    setFormData(prev => ({ ...prev, experience: updatedExperience }));
+};
+
+const addExperienceField = () => {
+    setFormData(prev => ({ ...prev, experience: [...prev.experience, ""] }));
+};
+
+const removeExperienceField = (index) => {
+    const updatedExperience = [...formData.experience];
+    updatedExperience.splice(index, 1);
+    setFormData(prev => ({ ...prev, experience: updatedExperience }));
+};
+
+
   const handleFinalRegister = async () => {
     try {
       const requestData = {
@@ -85,9 +97,9 @@ export default function RegisterForm() {
         password: formData.password,
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
-        pengalaman: formData.experience.split("|") // TODO: Handle delimeter or toList or toString
+        pengalaman: formData.experience.map(e => e.trim()), // TODO: Handle delimeter or toList or toString
       };
-  
+
       // 1. Register dulu
       const registerResponse = await axios.post(
         `http://localhost:8080/api/${role}s/register`,
@@ -100,7 +112,7 @@ export default function RegisterForm() {
   
       // 3. Upload image if Tentor dan ada file
       // TODO: If tentor and profile pict null then pake default image
-      if (role === "tentor" && formData.profilePicture) {
+      if (role === "tentor" && formData.profilePicture && formData.profilePicture instanceof File) {
         const formToUpdate = new FormData();
         formToUpdate.append("file", formData.profilePicture);
   
@@ -119,7 +131,7 @@ export default function RegisterForm() {
       localStorage.setItem("token", token);
 
       // 5. Redirect success
-      setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman login...");
+      setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman dashboard...");
       setTimeout(() => {
         navigate("/");
       }, 2000);
@@ -233,6 +245,7 @@ export default function RegisterForm() {
                     placeholder="08xxxxxxxxxx"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
+                    maxLength={12}
                   />
                 </div>
 
@@ -288,16 +301,36 @@ export default function RegisterForm() {
                 </div>
 
                 <div>
-                  <label htmlFor="experience" className="block text-sm font-medium text-gray-700">Pengalaman Mengajar</label>
-                  <textarea
-                    id="experience"
-                    name="experience"
-                    className="mt-1 w-full px-4 py-2 border rounded-lg"
-                    placeholder="Ceritakan pengalaman Anda..."
-                    value={formData.experience}
-                    onChange={handleInputChange}
-                  />
+                  <label className="block text-sm font-medium text-gray-700">Pengalaman Mengajar</label>
+                  {formData.experience.map((exp, index) => (
+                    <div key={index} className="flex items-center mb-2">
+                      <input
+                        type="text"
+                        className="w-full px-4 py-2 border rounded-lg"
+                        placeholder={`Pengalaman ${index + 1}`}
+                        value={exp}
+                        onChange={(e) => handleExperienceChange(index, e.target.value)}
+                      />
+                      {formData.experience.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeExperienceField(index)}
+                          className="ml-2 text-red-500 font-bold"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addExperienceField}
+                    className="mt-1 text-blue-500 text-sm hover:underline"
+                  >
+                    + Tambah pengalaman
+                  </button>
                 </div>
+
 
                 <div>
                   <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700">Foto Profil</label>
