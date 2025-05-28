@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import TutorCard from './TutorCard';
+import axios from 'axios';
 
 const tutors = [
   {
@@ -24,12 +26,33 @@ const tutors = [
 ];
 
 const TutorList = () => {
+  const [tentors, setTentors] = useState([]);
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/tentors', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setTentors(response.data);
+        console.log(response.data)
+      } catch (error) {
+        alert('Error! Baca console pls');
+        console.error(error);
+      }
+    };
+
+    fetchTutors();
+  }, []);
+
   return (
     <section className="mt-8 px-8">
       <h2 className="text-xl font-semibold mb-4 text-blue">Tentor Tersedia</h2>
       <div className="flex flex-wrap gap-6">
-        {tutors.map((tutor, idx) => (
-          <TutorCard key={idx} {...tutor} />
+        {tentors.map((tentor, idx) => (
+          <TutorCard key={idx} image={tentor.fotoUrl} name={tentor.nama} subjects={['Lorem', 'Ipsum']}/>
         ))}
       </div>
     </section>
