@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useContext } from 'react';
+import axios from "axios";
 
 export const UserContext = createContext();
 
@@ -22,14 +23,23 @@ export const UserProvider = ({ children }) => {
           setUser(null);
           navigate("/login"); // redirect logout
         } else {
-          // Set user data dari token
-          setUser({
-            id: decoded.sub,
-            email: decoded.email,
-            name: decoded.nama,
-            role: decoded.role,
-            fotoUrl: decoded.fotoUrl || null,
-          });
+          axios
+            .get("http://localhost:8080/api/auth/me", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((res) => {
+              setUser(res.data);
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.error("Gagal mengambil data user:", err);
+              localStorage.removeItem("token");
+              setUser(null);
+              navigate("/login");
+              setLoading(false);
+            });
 
         }
       } catch (err) {

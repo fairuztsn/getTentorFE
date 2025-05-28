@@ -72,21 +72,20 @@ export default function RegisterForm() {
   };
 
   const handleExperienceChange = (index, value) => {
-  const updatedExperience = [...formData.experience];
-  updatedExperience[index] = value;
+    const updatedExperience = [...formData.experience];
+    updatedExperience[index] = value;
     setFormData(prev => ({ ...prev, experience: updatedExperience }));
-};
+  };
 
-const addExperienceField = () => {
+  const addExperienceField = () => {
     setFormData(prev => ({ ...prev, experience: [...prev.experience, ""] }));
-};
+  };
 
-const removeExperienceField = (index) => {
+  const removeExperienceField = (index) => {
     const updatedExperience = [...formData.experience];
     updatedExperience.splice(index, 1);
     setFormData(prev => ({ ...prev, experience: updatedExperience }));
-};
-
+  };
 
   const handleFinalRegister = async () => {
     try {
@@ -98,6 +97,7 @@ const removeExperienceField = (index) => {
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
         pengalaman: formData.experience.map(e => e.trim()), // TODO: Handle delimeter or toList or toString
+        fotoUrl: formData.profilePicture?.name
       };
 
       // 1. Register dulu
