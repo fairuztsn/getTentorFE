@@ -75,7 +75,20 @@ export default function TutorProfile() {
       alert('Error ambil review!');
       console.error(error);
     });
-  }, [refresh]);
+
+    if(user) {
+      axios.get(`http://localhost:8080/api/favorites/${user?.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(response => {
+        setIsFavorited(response.data.some(fav => fav.id === parseInt(id)));
+      }).catch(error => {
+        alert('Error ambil favorit!');
+        console.error(error);
+      })
+    }
+  }, [refresh, user]);
 
   useState(() => {
   
@@ -147,7 +160,40 @@ export default function TutorProfile() {
   };
 
   const handleFavoriteClick = () => {
-    setIsFavorited(prev => !prev);
+    if(!isFavorited) {
+      axios.post('http://localhost:8080/api/favorites', null, {
+        params: {
+          tentorId: id,
+          menteeId: user.id,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      }).then(() => {
+        setIsFavorited(true);
+      }) 
+      .catch(error => {
+        alert("Error tambah favorit!");
+        console.error(error);
+      })
+
+    }else {
+      axios.delete(`http://localhost:8080/api/favorites`, {
+        params: {
+          tentorId: id,
+          menteeId: user.id
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(() => {
+        setIsFavorited(false);
+      }).catch(error => {
+        alert('Error hapus favorit!');
+        console.error(error);
+      })
+
+    }
   };
 
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, visibleReviews);
@@ -294,7 +340,7 @@ export default function TutorProfile() {
             )}
           </>
         ) : (
-          <p className="text-sm text-gray-500 italic mb-4">Heee~ yang udah bikin review gabisa bikin lagi</p>
+          <p className="text-sm text-gray-500 italic mb-4">Heee~ yang udah bikin review gabisa bikin lagi ya~</p>
         )}
 
 
