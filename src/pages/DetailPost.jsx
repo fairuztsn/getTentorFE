@@ -34,7 +34,7 @@ export default function TutorProfile() {
         location: "Jakarta - Kelapa Gading",
         email: data.email,
         phone: data.noTelp,
-        about: `${data.pengalaman.join(", ")}`,
+        about: data.pengalaman,
         skills: data.listMataKuliah.map(mk => mk.nama),
         profilePictureUrl: data.fotoUrl,
       });
@@ -106,8 +106,8 @@ export default function TutorProfile() {
   const [visibleReviews, setVisibleReviews] = useState(1);
   const reviewsPerLoad = 2;
 
-  const maxLength = 150;
-  const canExpand = tentor?.about?.length > maxLength;
+  // const maxLength = 2;
+  // const canExpand = tentor?.about?.length > maxLength;
   // const displayText = isExpanded ? tentor?.about : `${tentor?.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   const handleInputChange = (e) => {
@@ -252,20 +252,35 @@ export default function TutorProfile() {
             <div className="flex items-center gap-4 flex-wrap">
               <img src="/images/book.png" alt="Skills" className="h-10 w-10" />
               {tentor?.skills.map((skill, index) => (
-                <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-200 text-sm bg-white/50 backdrop-blur-sm">
+                <span
+                  key={index}
+                  className="
+                  cursor-pointer hover:scale-95 active:scale-90
+                  bg-white/50 text-blue-800 px-3 py-1 rounded-full border border-blue-200 text-sm backdrop-blur-sm hover:bg-white/70 hover:shadow-md transition-all duration-200"
+                >
                   {skill}
                 </span>
               ))}
             </div>
 
             <div className="bg-white/50 border rounded-lg p-4 backdrop-blur-sm shadow relative">
-              <h3 className="text-2xl font-bold mb-3">About</h3>
+              <h3 className="text-2xl font-bold mb-3">Pengalaman</h3>
               <div className={`text-gray-700 text-base leading-relaxed transition-all duration-300 ${
-                isExpanded ? 'max-h-[400px] overflow-y-auto' : 'max-h-[120px] overflow-hidden'
+                true ? 'max-h-[400px] overflow-y-auto' : 'max-h-[120px] overflow-hidden'
               }`}>
-                {tentor?.about}
+                <ul className="list-none pl-0 space-y-2 text-sm text-gray-700 m-2">
+                  {tentor?.about.map((point, idx) => (
+                    <li
+                      key={idx}
+                      className="bg-white/50 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg shadow-sm
+                                hover:shadow-md active:scale-95 transition-all duration-200"
+                    >
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              {canExpand && (
+              {/* {canExpand && (
                 <button onClick={() => setIsExpanded(!isExpanded)} className="text-blue-600 hover:text-blue-800 font-medium text-sm mt-2 absolute bottom-2 right-4 bg-white/80 px-3 py-1 rounded-full">
                   {isExpanded ? (
                     <><span className="hidden md:inline">Show Less</span><span className="md:hidden">▲</span></>
@@ -273,7 +288,7 @@ export default function TutorProfile() {
                     <><span className="hidden md:inline">Read More</span><span className="md:hidden">▼</span></>
                   )}
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         </div>
