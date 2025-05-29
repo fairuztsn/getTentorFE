@@ -25,7 +25,7 @@ export default function TutorProfile() {
         });
         const data = response.data;
         setTentor({
-          name: data.mahasiswa.nama,
+          name: data.nama,
           position: "Principal Software Engineer Manager @ Microsoft",
           experience: "5+ years of experience in software development",
           rating: data.averageRating,// "5.0 (254 Reviews)",
@@ -33,7 +33,7 @@ export default function TutorProfile() {
           email: data.email,
           phone: data.noTelp,
           about: "With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
-          skills: ["Lorem", "Ipsum"],
+          skills: data.listMataKuliah.map(mk => mk.nama),
           profilePictureUrl: data.fotoUrl,
         });
       } catch (error) {
