@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
             })
             .then((res) => {
               setUser({
-                id: decoded.id,
+                id: decoded.sub,
                 email: decoded.email,
                 role: decoded.role,
                 name: decoded.nama,
