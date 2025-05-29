@@ -239,11 +239,6 @@ export default function TutorProfile() {
           <button
             className="w-full px-4 py-2 border rounded-full hover:bg-gray-100 transition bg-white/50 backdrop-blur-sm mb-6"
             onClick={() => {
-              if (!currentUser) {
-                alert("Please login to submit a review");
-                navigate("/login");
-                return;
-              }
               setShowReviewForm(!showReviewForm);
             }}
           >
