@@ -8,6 +8,7 @@ export default function LoginForm() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -22,10 +23,13 @@ export default function LoginForm() {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      navigate("/"); 
+      setSuccessMessage("Login berhasil!");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
-      setErrorMessage("Login gagal. Silakan coba lagi.");
-      console.error("Error login:", error.response?.data || "Login gagal");
+      const message = error.response?.data?.error || error.message || "Login gagal. Silakan coba lagi.";
+      setErrorMessage(message);
     }
   }
 
@@ -48,7 +52,7 @@ export default function LoginForm() {
             Selamat Datang
           </h1>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-            Login ke Akun Anda
+            Silahkan Login ke Akun Anda !
           </h2>
 
           {/* Role Tabs */}
@@ -56,7 +60,7 @@ export default function LoginForm() {
             <div
               className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${
                 role === "mentee"
-                  ? "text-black border-b-2 border-blue-500"
+                  ? "text-black border-b-2 border-blue"
                   : "text-gray-500 border-b-2 border-gray-300"
               }`}
               onClick={() => setRole("mentee")}
@@ -66,7 +70,7 @@ export default function LoginForm() {
             <div
               className={`cursor-pointer pb-2 text-lg font-semibold transition-colors duration-200 ${
                 role === "tentor"
-                  ? "text-black border-b-2 border-blue-500"
+                  ? "text-black border-b-2 border-blue"
                   : "text-gray-500 border-b-2 border-gray-300"
               }`}
               onClick={() => setRole("tentor")}
@@ -76,7 +80,17 @@ export default function LoginForm() {
           </div>
 
           <form className="space-y-6">
-            <p>{errorMessage}</p>
+            {errorMessage && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {errorMessage}
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                {successMessage}
+              </div>
+            )}
             <div>
               <label
                 htmlFor="email"
@@ -118,13 +132,10 @@ export default function LoginForm() {
               {`Masuk sebagai ${role.charAt(0).toUpperCase() + role.slice(1)}`}
             </button>
 
-            <div className="text-sm text-center text-gray-600">
-              <a href="#" className="text-blue-500 hover:underline">
-                Lupa Password?
-              </a>
-              <br />
-              <a href="./register" className="text-blue-500 hover:underline">
-                Belum punya akun? Daftar!
+            <div className="text-m text-center text-gray-600">
+              <span>Belum punya akun? </span>
+              <a href="./register" className=" text-blue-dark hover:underline">
+                Daftar!
               </a>
             </div>
           </form>
