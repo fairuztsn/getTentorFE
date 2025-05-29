@@ -14,54 +14,58 @@ export default function Profile() {
   const isTentor = role === "tentor";
 
   const [isEditing, setIsEditing] = useState(false);
+  const [initialEditForm, setInitialEditForm] = useState(null);
   const [editForm, setEditForm] = useState(null);
   const fileInputRef = useRef(null);
 
   const token = localStorage.getItem('token');
   
   useEffect(() => {
-    if (user) {
-      axios.get('http://localhost:8080/api/auth/me', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }).then(response => {
-        let data = response.data;
-        setEditForm({
-          name: data.nama,
-          email: data.email,
-          noTelp: data.noTelp,
-          fotoUrl: data.fotoUrl,
+    if (!user) return;
+  
+    const fetchUserData = async () => {
+      try {
+        const resUser = await axios.get('http://localhost:8080/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        const baseForm = {
+          name: resUser.data.nama,
+          email: resUser.data.email,
+          noTelp: resUser.data.noTelp,
+          fotoUrl: resUser.data.fotoUrl,
           listMataKuliah: [""],
           pengalamanArray: [""],
           ipk: ""
-        });
-
-        if(role === "tentor") {
-          axios.get(`http://localhost:8080/api/tentors/${user?.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }).then(response => {
-            const tentor = response.data;
-            console.log(tentor);
-            setEditForm(prev => ({
-              ...prev,
-              listMataKuliah: [...(tentor.listMataKuliah || [])],
-              pengalamanArray: tentor.pengalaman || [""],
-              ipk: tentor.ipk || "",
-            }))
-          }).catch(error => {
-            alert('Ada error waktu ngambil data tentor!');
-            console.error(error);
-          })
+        };
+  
+        if (role === "tentor") {
+          const resTentor = await axios.get(`http://localhost:8080/api/tentors/${user.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+  
+          baseForm.listMataKuliah = resTentor.data.listMataKuliah || [""];
+          baseForm.pengalamanArray = resTentor.data.pengalaman || [""];
+          baseForm.ipk = resTentor.data.ipk || "";
         }
-      }).catch(error => {
-        alert('Ada error waktu ngambil data user!');
-        console.error(error);
-      })
+  
+        setEditForm(baseForm);
+        setInitialEditForm(baseForm);
+      } catch (err) {
+        alert("Gagal mengambil data user atau tentor");
+        console.error(err);
+      }
+    };
+  
+    fetchUserData();
+  }, [user, role]);  
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditForm(initialEditForm);
     }
-  }, [user]);
+  }, [isEditing]);
+  
 
   if (!user) {
     navigate("/login");
