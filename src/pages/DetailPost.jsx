@@ -366,7 +366,7 @@ export default function TutorProfile() {
               <div key={review.id} className="mb-8 p-4 border-b">
                 <div className="flex items-center gap-3 mb-3">
                   <img
-                    src={review.avatar}
+                    src={`${BACKEND_URL}/api/images/view/${review.avatar}`}
                     alt={review.name}
                     className="w-10 h-10 rounded-full"
                   />
