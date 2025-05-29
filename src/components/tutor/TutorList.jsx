@@ -41,7 +41,7 @@ const TutorList = () => {
   return (
     <section className="mt-8 px-8">
       <h2 className="text-xl font-semibold mb-4 text-blue">Tentor Tersedia</h2>
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap gap-6 justify-center items-center">
         {tentors.map((tentor, idx) => (
           <TutorCard 
             key={idx} 
