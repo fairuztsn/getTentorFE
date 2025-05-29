@@ -13,6 +13,7 @@ export default function TutorProfile() {
   const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -145,6 +146,10 @@ export default function TutorProfile() {
     setShowAllReviews(!showAllReviews);
   };
 
+  const handleFavoriteClick = () => {
+    setIsFavorited(prev => !prev);
+  };
+
   const displayedReviews = showAllReviews ? reviews : reviews.slice(0, visibleReviews);
 
   return (
@@ -165,8 +170,15 @@ export default function TutorProfile() {
               <div className="border bg-yellow-400 text-black px-4 py-2 rounded-full font-semibold hover:bg-yellow-500 transition">
                 ★ Star Tentor
               </div>
-              <button className="border px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition bg-white/50 backdrop-blur-sm">
-                🤍 Add to Fav
+              <button 
+              className={`border px-4 py-2 rounded-full font-semibold transition backdrop-blur-sm ${
+                isFavorited
+                  ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                  : 'bg-white/50 hover:bg-gray-100'
+              }`}
+              onClick={handleFavoriteClick}
+              >
+                {isFavorited ? '❤️ Favorited' : '🤍 Add to Fav'}
               </button>
             </div>
           </div>
