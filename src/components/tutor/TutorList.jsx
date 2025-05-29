@@ -1,41 +1,33 @@
 import { useState, useEffect } from 'react';
 import TutorCard from './TutorCard';
 import axios from 'axios';
-
-const tutors = [
-  {
-    name: 'Seixin',
-    image: 'seixin.jpg',
-    subjects: ['PBO', 'Jarkom', 'APPL', 'AI'],
-  },
-  {
-    name: 'Saiki Kusuo',
-    image: 'saiki.jpg',
-    subjects: ['Alpro', 'BasDat'],
-  },
-  {
-    name: 'Uesugi Fuutarou',
-    image: 'uesugi.jpg',
-    subjects: ['Kalkulus', 'Statistika', 'Bindo'],
-  },
-  {
-    name: 'Yuiga Nariyuki',
-    image: 'yuiga.jpg',
-    subjects: ['Fisika', 'Bindo', 'Bing', 'Kalkulus', 'Statistika'],
-  },
-];
+import { useSearchParams } from "react-router-dom";
 
 const TutorList = () => {
+  const [searchParams] = useSearchParams();
+  const q = searchParams.get("q"); 
+
   const [tentors, setTentors] = useState([]);
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/tentors', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+        let response;
+
+        if(!q) {
+          response = await axios.get('http://localhost:8080/api/tentors', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+        }else {
+          response = await axios.get(`http://localhost:8080/api/tentors/search?q=${q}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            }
+          });
+        }
+
         setTentors(response.data);
       } catch (error) {
         alert('Error! Baca console pls');
@@ -44,7 +36,7 @@ const TutorList = () => {
     };
 
     fetchTutors();
-  }, []);
+  }, [q]);
 
   return (
     <section className="mt-8 px-8">
