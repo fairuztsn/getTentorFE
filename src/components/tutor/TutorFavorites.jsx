@@ -10,7 +10,7 @@ const TutorFavorites = () => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/favorites/${user.id}`, {
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URL}/api/favorites/${user.id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

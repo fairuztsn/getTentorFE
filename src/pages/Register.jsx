@@ -18,6 +18,7 @@ const isValidGPA = (gpa) => {
   return /^([0-3](\.\d{1,2})?|4(\.0{1,2})?)$/.test(gpa);
 };
 
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
 export default function RegisterForm() {
   const [role, setRole] = useState("mentee");
@@ -144,7 +145,7 @@ export default function RegisterForm() {
 
       // 1. Register dulu
       const registerResponse = await axios.post(
-        `http://localhost:8080/api/${role}s/register`,
+        `${BACKEND_URL}/api/${role}s/register`,
         requestData,
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -159,7 +160,7 @@ export default function RegisterForm() {
         formToUpdate.append("file", formData.profilePicture);
   
         await axios.put(
-          'http://localhost:8080/api/tentors/update-profile',
+          `${BACKEND_URL}/api/tentors/update-profile`,
           formToUpdate,
           {
             headers: {

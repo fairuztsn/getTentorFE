@@ -3,6 +3,7 @@ import TutorCard from './TutorCard';
 import axios from 'axios';
 import { useSearchParams } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 const TutorList = () => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q"); 
@@ -15,13 +16,13 @@ const TutorList = () => {
         let response;
 
         if(!q) {
-          response = await axios.get('http://localhost:8080/api/tentors', {
+          response = await axios.get(`${BACKEND_URL}/api/tentors`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           });
         }else {
-          response = await axios.get(`http://localhost:8080/api/tentors/search?q=${q}`, {
+          response = await axios.get(`${BACKEND_URL}/api/tentors/search?q=${q}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             }

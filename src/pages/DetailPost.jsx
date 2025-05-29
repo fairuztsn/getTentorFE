@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '@/contexts/UserContextProvider';
 
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
+
 export default function TutorProfile() {
   const { id } = useParams();
   const { user } = useUser();
@@ -18,7 +20,7 @@ export default function TutorProfile() {
   useEffect(() => {
     if (!id) return;
   
-    axios.get(`http://localhost:8080/api/tentors/${id}`, {
+    axios.get(`${BACKEND_URL}/api/tentors/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -44,7 +46,7 @@ export default function TutorProfile() {
       console.error(error);
     });
   
-    axios.get(`http://localhost:8080/api/reviews/tentor/${id}`, {
+    axios.get(`${BACKEND_URL}/api/reviews/tentor/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -54,7 +56,7 @@ export default function TutorProfile() {
         id: review.id,
         userId: review.mentee.id,
         name: review.reviewerNama,
-        avatar: review.mentee.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
+        avatar: review.mentee.fotoUrl || `${BACKEND_URL}/api/images/view/default-profile.png`,
         date: new Date(review.createdAt).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -77,7 +79,7 @@ export default function TutorProfile() {
     });
 
     if(user) {
-      axios.get(`http://localhost:8080/api/favorites/${user?.id}`, {
+      axios.get(`${BACKEND_URL}/api/favorites/${user?.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -121,7 +123,7 @@ export default function TutorProfile() {
   const handleSubmitReview = (e) => {
     e.preventDefault();
 
-    axios.post(`http://localhost:8080/api/reviews`,
+    axios.post(`${BACKEND_URL}/api/reviews`,
       {
         "menteeId": user?.id,
         "tentorId": id,
@@ -161,7 +163,7 @@ export default function TutorProfile() {
 
   const handleFavoriteClick = () => {
     if(!isFavorited) {
-      axios.post('http://localhost:8080/api/favorites', null, {
+      axios.post(`${BACKEND_URL}/api/favorites`, null, {
         params: {
           tentorId: id,
           menteeId: user.id,
@@ -178,7 +180,7 @@ export default function TutorProfile() {
       })
 
     }else {
-      axios.delete(`http://localhost:8080/api/favorites`, {
+      axios.delete(`${BACKEND_URL}/api/favorites`, {
         params: {
           tentorId: id,
           menteeId: user.id
@@ -207,7 +209,7 @@ export default function TutorProfile() {
           <div className="relative flex items-start px-4 pt-4 pb-8 gap-6">
             <div className="relative -mt-[-20px]">
               <img
-                src={tentor?.profilePictureUrl}
+                src={`${BACKEND_URL}/api/images/view/${tentor?.profilePictureUrl || 'default-profile.png'}`}
                 alt="Profile"
                 className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-white shadow-lg z-10"
               />

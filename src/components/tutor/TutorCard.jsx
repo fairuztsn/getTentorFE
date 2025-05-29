@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
 
 // src/components/TutorCard.jsx
+
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
+
 const TutorCard = ({ id, image, name, subjects, averageRating }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
       <img
-        src={image}
+        src={image ? `${BACKEND_URL}/api/images/view/${image}` : `${BACKEND_URL}/api/images/view/default-profile.png`}
         alt={name}
         className="rounded-lg w-full h-50 object-cover"
       />

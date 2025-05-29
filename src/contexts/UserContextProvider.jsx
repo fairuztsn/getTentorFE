@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import axios from "axios";
 
 export const UserContext = createContext();
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -25,7 +26,7 @@ export const UserProvider = ({ children }) => {
           navigate("/login");
         } else {
           axios
-            .get("http://localhost:8080/api/auth/me", {
+            .get(`${BACKEND_URL}/api/auth/me`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -38,7 +39,7 @@ export const UserProvider = ({ children }) => {
                 email: decoded.email,
                 role: decoded.role,
                 name: decoded.nama, // Use nama from token
-                fotoUrl: userData.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
+                fotoUrl: userData.fotoUrl || 'default-profile.png'
               });
               setLoading(false);
             })

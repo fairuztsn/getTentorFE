@@ -2,6 +2,7 @@
 import { useUser } from "@/contexts/UserContextProvider";
 import { useNavigate } from 'react-router-dom';
 
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 const Header = () => {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Header = () => {
         {user?.role !== "tentor" && <button onClick={() => navigate('/profile/favorites')} className="bg-blue-dark hover:bg-blue-600 text-white px-4 py-1 rounded mr-10">Tentor Favorit</button>}
         <div className="flex items-center space-x-2" onClick={() => navigate('/profile')} style={{cursor: 'pointer'}}>
           <span className="text-gray-700">{user?.name}</span>
-          <img src={user?.fotoUrl} className="w-8 h-8 rounded-full border" alt="User Avatar" />
+          <img src={`${BACKEND_URL}/api/images/view/${user?.fotoUrl}`} className="w-8 h-8 rounded-full border" alt="User Avatar" />
         </div>
       </div>
     </header>
