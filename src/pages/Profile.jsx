@@ -26,18 +26,36 @@ export default function Profile() {
           Authorization: `Bearer ${token}`
         }
       }).then(response => {
-        const data = response.data;
+        let data = response.data;
         setEditForm({
           name: data.nama,
           email: data.email,
-          ipk: data.ipk || "",
           noTelp: data.noTelp,
           fotoUrl: data.fotoUrl,
-          listMataKuliah: [...(data.listMataKuliah || [])],
-          pengalamanArray: data.pengalaman 
-            ? data.pengalaman.split("|").filter(item => item.trim() !== "").map(item => item.trim())
-            : [""]
+          listMataKuliah: [""],
+          pengalamanArray: [""],
+          ipk: ""
         });
+
+        if(role === "tentor") {
+          axios.get(`http://localhost:8080/api/tentors/${user?.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).then(response => {
+            const tentor = response.data;
+            console.log(tentor);
+            setEditForm(prev => ({
+              ...prev,
+              listMataKuliah: [...(tentor.listMataKuliah || [])],
+              pengalamanArray: tentor.pengalaman || [""],
+              ipk: tentor.ipk || "",
+            }))
+          }).catch(error => {
+            alert('Ada error waktu ngambil data tentor!');
+            console.error(error);
+          })
+        }
       }).catch(error => {
         alert('Ada error waktu ngambil data user!');
         console.error(error);
@@ -49,12 +67,6 @@ export default function Profile() {
     navigate("/login");
     return;
   }
-
-  const pengalamanItems = user.pengalaman
-    ? user.pengalaman.split("|")
-        .filter((item) => item.trim() !== "")
-        .map((item) => item.trim())
-    : [];
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -291,17 +303,17 @@ export default function Profile() {
                   <div className="bg-white/70 border rounded-lg p-4 backdrop-blur-sm shadow">
                     <h3 className="text-2xl font-bold mb-3">Mata Kuliah</h3>
                     <div className="space-y-2">
-                      {editForm.listMataKuliah.map((mk, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
+                      {editForm?.listMataKuliah.map(mk => (
+                        <div key={mk.id} className="flex items-center gap-2">
                           <input
                             type="text"
-                            value={mk}
-                            onChange={(e) => handleMataKuliahChange(idx, e.target.value)}
+                            value={mk.nama}
+                            onChange={(e) => handleMataKuliahChange(mk.id, e.target.value)}
                             className="flex-1 p-2 border rounded"
                           />
                           <button 
                             type="button" 
-                            onClick={() => handleRemoveMataKuliah(idx)}
+                            onClick={() => handleRemoveMataKuliah(mk.id)}
                             className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                           >
                             ×
@@ -409,9 +421,10 @@ export default function Profile() {
                         {editForm?.listMataKuliah.map((mk, idx) => (
                           <span
                             key={idx}
-                            className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full border border-blue-200 text-base"
+                            className="bg-white/50 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg shadow-sm
+                                hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
                           >
-                            {mk}
+                            {mk.nama}
                           </span>
                         ))}
                       </div>
@@ -423,9 +436,9 @@ export default function Profile() {
                   {/* Experience */}
                   <div className="bg-white/70 border rounded-lg p-4 backdrop-blur-sm shadow">
                     <h3 className="text-2xl font-bold mb-4">Pengalaman</h3>
-                    {pengalamanItems.length > 0 ? (
+                    {editForm?.pengalamanArray.length > 0 ? (
                       <ul className="space-y-3 text-gray-700">
-                        {pengalamanItems.map((item, idx) => (
+                        {editForm?.pengalamanArray.map((item, idx) => (
                           <li key={idx} className="text-lg">• {item}</li>
                         ))}
                       </ul>
