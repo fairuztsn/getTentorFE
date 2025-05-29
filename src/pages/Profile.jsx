@@ -3,33 +3,51 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { useUser } from "@/contexts/UserContextProvider";
+import axios from 'axios';
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
+  
+  // Tentukan role user
+  const role = user?.role;
+  const isTentor = role === "tentor";
+
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState(null);
   const fileInputRef = useRef(null);
+
+  const token = localStorage.getItem('token');
   
   useEffect(() => {
     if (user) {
-      setEditForm({
-        name: user.name,
-        email: user.email,
-        ipk: user.ipk || "",
-        noTelp: user.noTelp || "",
-        fotoUrl: user.fotoUrl,
-        listMataKuliah: [...(user.listMataKuliah || [])],
-        pengalamanArray: user.pengalaman 
-          ? user.pengalaman.split("|").filter(item => item.trim() !== "").map(item => item.trim())
-          : [""]
-      });
+      axios.get('http://localhost:8080/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(response => {
+        const data = response.data;
+        setEditForm({
+          name: data.nama,
+          email: data.email,
+          ipk: data.ipk || "",
+          noTelp: data.noTelp,
+          fotoUrl: data.fotoUrl,
+          listMataKuliah: [...(data.listMataKuliah || [])],
+          pengalamanArray: data.pengalaman 
+            ? data.pengalaman.split("|").filter(item => item.trim() !== "").map(item => item.trim())
+            : [""]
+        });
+      }).catch(error => {
+        alert('Ada error waktu ngambil data user!');
+        console.error(error);
+      })
     }
   }, [user]);
 
   if (!user) {
     navigate("/login");
-    return null;
+    return;
   }
 
   const pengalamanItems = user.pengalaman
@@ -103,6 +121,7 @@ export default function Profile() {
       reader.onloadend = () => {
         setEditForm(prev => ({
           ...prev,
+          fileFoto: file,
           fotoUrl: reader.result
         }));
       };
@@ -111,24 +130,51 @@ export default function Profile() {
   };
 
   const handleSave = () => {
-    const pengalamanString = editForm.pengalamanArray.join(" | ");
-    
-    const updatedUser = {
-      ...user,
-      name: editForm.name,
-      ipk: editForm.ipk,
-      noTelp: editForm.noTelp,
-      fotoUrl: editForm.fotoUrl,
-      pengalaman: pengalamanString,
-      listMataKuliah: editForm.listMataKuliah
-    };
-    
-    setUser(updatedUser);
-    setIsEditing(false);
-  };
+    const formData = new FormData();
+    if(editForm.fileFoto) {
+      formData.append('file', editForm.fileFoto);
+    }
+    formData.append(
+      "data",
+      new Blob(
+        [JSON.stringify({
+          nama: editForm.name,
+          noTelp: editForm.noTelp
+        })],
+        { type: "application/json" }
+      )
+    );
 
-  // Tentukan role user
-  const isTentor = user?.role === "tentor";
+    axios.put(`http://localhost:8080/api/${role}s/update-profile`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(() => {
+      alert("Berhasil!!!")
+      axios
+        .get("http://localhost:8080/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          const userData = res.data;
+          setUser(prev => ({
+            ...prev,
+            name: userData.nama,
+            fotoUrl: userData.fotoUrl || prev.fotoUrl,
+          }));
+          setIsEditing(false);
+        })
+        .catch((err) => {
+          console.error("Gagal mengambil data user:", err);
+          console.error(err);
+        });
+    }).catch(error => {
+      alert('Ada error waktu update profile!');
+      console.error(error);
+    })
+  };
 
   return (
     <div className="bg-white bg-cover bg-center font-sans min-h-screen">
@@ -140,7 +186,7 @@ export default function Profile() {
               {isEditing ? (
                 <div className="relative group">
                   <img
-                    src={editForm?.fotoUrl || user.fotoUrl}
+                    src={editForm?.fotoUrl || user}
                     alt="Profile"
                     className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-white shadow-lg z-10 object-cover"
                   />
@@ -325,28 +371,28 @@ export default function Profile() {
               <div className="border rounded-xl p-6 shadow bg-white/70 backdrop-blur-sm">
                 <div className="space-y-6">
                   <div>
-                    <h1 className="text-2xl font-bold mb-4">{user.name}</h1>
+                    <h1 className="text-2xl font-bold mb-4">{editForm?.name}</h1>
                   </div>
                   
                   <div className="space-y-4">
                     {/* Email untuk semua */}
                     <div>
                       <p className="font-semibold text-gray-700">Email:</p>
-                      <p className="text-lg mt-1">{user.email}</p>
+                      <p className="text-lg mt-1">{editForm?.email}</p>
                     </div>
                     
                     {/* IPK - Hanya untuk tentor */}
                     {isTentor && (
                       <div>
                         <p className="font-semibold text-gray-700">IPK:</p>
-                        <p className="text-lg mt-1">{user.ipk || "-"}</p>
+                        <p className="text-lg mt-1">{editForm?.ipk || "-"}</p>
                       </div>
                     )}
                     
                     {/* Phone untuk semua */}
                     <div>
                       <p className="font-semibold text-gray-700">No. Telepon:</p>
-                      <p className="text-lg mt-1">{user.noTelp || "-"}</p>
+                      <p className="text-lg mt-1">{editForm?.noTelp || "-"}</p>
                     </div>
                   </div>
                 </div>
@@ -358,9 +404,9 @@ export default function Profile() {
                   {/* Courses */}
                   <div className="bg-white/70 border rounded-lg p-4 backdrop-blur-sm shadow">
                     <h3 className="text-2xl font-bold mb-4">Mata Kuliah</h3>
-                    {user.listMataKuliah && user.listMataKuliah.length > 0 ? (
+                    {editForm?.listMataKuliah && editForm?.listMataKuliah.length > 0 ? (
                       <div className="flex flex-wrap gap-3">
-                        {user.listMataKuliah.map((mk, idx) => (
+                        {editForm?.listMataKuliah.map((mk, idx) => (
                           <span
                             key={idx}
                             className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full border border-blue-200 text-base"
@@ -402,8 +448,8 @@ export default function Profile() {
                   <div className="bg-white/70 border rounded-lg p-4 backdrop-blur-sm shadow">
                     <h3 className="text-2xl font-bold mb-4">Tentor Favorit</h3>
                     <p className="text-gray-700">
-                      {user.favoriteTentor 
-                        ? `Tentor favoritmu: ${user.favoriteTentor}`
+                      {editForm?.favoriteTentor 
+                        ? `Tentor favoritmu: ${editForm?.favoriteTentor}`
                         : "Kamu belum memilih tentor favorit"}
                     </p>
                   </div>
