@@ -32,7 +32,7 @@ const TutorCard = ({ id, image, name, subjects, averageRating }) => {
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-sm mt-5">⭐ {`${averageRating}`}/5.0</div>
+      <div className="text-sm mt-5">⭐ {`${averageRating}`}/5.0</div>
 
       {/* Action Button */}
       <button className="w-full bg-blue text-white py-1 rounded hover:bg-blue-600 mt-5" onClick={() => navigate(`/tentor/${id}`)}>
