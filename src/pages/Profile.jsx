@@ -128,10 +128,10 @@ export default function Profile() {
   };
 
   // Tentukan role user
-  const isTentor = user.role === "tentor";
+  const isTentor = user?.role === "tentor";
 
   return (
-    <div className="bg-[url('/images/carthe2.png')] bg-cover bg-center font-sans min-h-screen">
+    <div className="bg-white bg-cover bg-center font-sans min-h-screen">
       <Header />
       <div className="max-w-4xl mx-auto">
         <div className="relative">      
