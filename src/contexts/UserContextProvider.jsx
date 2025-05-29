@@ -34,18 +34,11 @@ export const UserProvider = ({ children }) => {
               // Extract all necessary fields from response
               const userData = res.data;
               setUser({
-                id: decoded.id,
+                id: decoded.sub,
                 email: decoded.email,
                 role: decoded.role,
                 name: decoded.nama, // Use nama from token
                 fotoUrl: userData.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
-                // Add profile-specific fields
-                ipk: userData.ipk || null,
-                noTelp: userData.noTelp || '',
-                pengalaman: userData.pengalaman || '',
-                listMataKuliah: userData.listMataKuliah || [],
-                // Add NIM if available
-                nim: userData.nim || ''
               });
               setLoading(false);
             })

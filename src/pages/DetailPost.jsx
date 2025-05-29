@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
-// Dummy user login (ubah ke null jika ingin simulasi user belum login)
-const dummyUser = {
-  id: "dummy123",
-  displayName: "Test User",
-  photoURL: "/images/default-avatar.png",
-};
+import { useUser } from '@/contexts/UserContextProvider';
 
 export default function TutorProfile() {
   const { id } = useParams();
+  const { user } = useUser();
+
   const [tentor, setTentor] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
 
   useEffect(() => {
     const fetchTentorData = async() => {
@@ -23,17 +22,19 @@ export default function TutorProfile() {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
+
         const data = response.data;
+        
         setTentor({
-          name: data.mahasiswa.nama,
-          position: "Principal Software Engineer Manager @ Microsoft",
-          experience: "5+ years of experience in software development",
-          rating: data.averageRating,// "5.0 (254 Reviews)",
+          name: data.nama,
+          position: "Tentor @ getTentor",
+          experience: "",//"5+ years of experience in software development",
+          rating: `${data.averageRating.toFixed(1)} (${data.ratingCount} Reviews)`,// "5.0 (254 Reviews)",
           location: "Jakarta - Kelapa Gading",
           email: data.email,
           phone: data.noTelp,
-          about: "With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
-          skills: ["Lorem", "Ipsum"],
+          about: `${data.pengalaman.join(", ")}`,//"With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
+          skills: data.listMataKuliah.map(mk => mk.nama),
           profilePictureUrl: data.fotoUrl,
         });
       } catch (error) {
@@ -42,8 +43,33 @@ export default function TutorProfile() {
       }
     }
 
+    const fetchReviews = async() => {
+      const response = await axios.get(`http://localhost:8080/api/reviews/tentor/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const transformedReviews = response.data.map(review => ({
+        id: review.id,
+        userId: review.menteeId,
+        name: review.reviewerNama,
+        avatar: review.mentee.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
+        date: new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        rating: review.rating,
+        comment: review.komentar
+      }));
+    
+      setReviews(transformedReviews);
+      const hasReviewed = transformedReviews.some(review => review.userId === user?.id);
+      if(hasReviewed) {
+        setAlreadyReviewed(true);
+      }
+    }
+
     fetchTentorData();
-  }, []);
+    fetchReviews();
+  }, [refresh]);
   
   const navigate = useNavigate();
   
@@ -57,49 +83,8 @@ export default function TutorProfile() {
   const [visibleReviews, setVisibleReviews] = useState(1);
   const reviewsPerLoad = 2;
 
-  const initialReviews = [
-    {
-      id: 1,
-      userId: "user1",
-      name: "Hoshino Takanashi",
-      avatar: "/images/hoshino.png",
-      date: new Date("October 1, 2025").toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      rating: 5,
-      comment: `"Hmm... the new mentor? They're kinda strict, but not in a bad way, I guess..."`
-    },
-    {
-      id: 2,
-      userId: "user2",
-      name: "John Doe",
-      avatar: "/images/default-avatar.png",
-      date: new Date("September 15, 2025").toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      rating: 4,
-      comment: "Great tutor! Very knowledgeable and patient. Explained complex concepts in a way that was easy to understand."
-    },
-    {
-      id: 3,
-      userId: "user3",
-      name: "Jane Smith",
-      avatar: "/images/default-avatar.png",
-      date: new Date("August 20, 2025").toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      rating: 5,
-      comment: "Absolutely fantastic! The tutor went above and beyond to help me understand the material. Highly recommend!"
-    },
-    {
-      id: 4,
-      userId: "user4",
-      name: "Anonymous",
-      avatar: "/images/default-avatar.png",
-      date: new Date("July 10, 2025").toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      rating: 3,
-      comment: "Good tutor overall, but sometimes explanations could be clearer. Still helped me pass my course though."
-    }
-  ];
-
-  const [reviews, setReviews] = useState(initialReviews);
-
   const maxLength = 150;
-  const canExpand = true; //tentor?.about?.length > maxLength;
+  const canExpand = tentor?.about?.length > maxLength;
   // const displayText = isExpanded ? tentor?.about : `${tentor?.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   const handleInputChange = (e) => {
@@ -113,25 +98,25 @@ export default function TutorProfile() {
   const handleSubmitReview = (e) => {
     e.preventDefault();
 
-    if (!currentUser) {
-      alert("Please login to submit a review");
-      navigate("/login");
-      return;
-    }
-
-    const newReviewObj = {
-      id: reviews.length + 1,
-      userId: currentUser.id,
-      name: currentUser.displayName || "Anonymous",
-      avatar: currentUser.photoURL || "/images/default-avatar.png",
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      rating: newReview.rating,
-      comment: newReview.comment
-    };
-
-    setReviews([newReviewObj, ...reviews]);
-    setNewReview({ rating: 5, comment: "" });
-    setShowReviewForm(false);
+    axios.post(`http://localhost:8080/api/reviews`,
+      {
+        "menteeId": user?.id,
+        "tentorId": id,
+        "rating": newReview.rating,
+        "komentar": newReview.comment
+      },
+      {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(_ => {
+      setNewReview({ rating: 5, comment: '' });  // reset form input
+      setAlreadyReviewed(true);
+      setRefresh(!refresh);
+    }).catch(error => {
+      alert("Error! Baca console coba");
+      console.error(error);
+    })
   };
 
   const renderStars = (rating) => {
@@ -236,59 +221,61 @@ export default function TutorProfile() {
             )}
           </div>
 
-          <button
-            className="w-full px-4 py-2 border rounded-full hover:bg-gray-100 transition bg-white/50 backdrop-blur-sm mb-6"
-            onClick={() => {
-              if (!currentUser) {
-                alert("Please login to submit a review");
-                navigate("/login");
-                return;
-              }
-              setShowReviewForm(!showReviewForm);
-            }}
-          >
-            {showReviewForm ? "Cancel Review" : "Add Your Review"}
-          </button>
+          {!alreadyReviewed ? (
+          <>
+            <button
+              className="w-full px-4 py-2 border rounded-full hover:bg-gray-100 transition bg-white/50 backdrop-blur-sm mb-6"
+              onClick={() => {
+                setShowReviewForm(!showReviewForm);
+              }}
+            >
+              {showReviewForm ? "Cancel Review" : "Add Your Review"}
+            </button>
 
-          {showReviewForm && (
-            <form onSubmit={handleSubmitReview} className="mb-8 p-4 border rounded-lg bg-white/70">
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Rating</label>
-                <div className="flex items-center">
-                  <select
-                    name="rating"
-                    value={newReview.rating}
-                    onChange={handleInputChange}
-                    className="p-2 border rounded mr-2"
-                  >
-                    {[1, 2, 3, 4, 5].map(num => (
-                      <option key={num} value={num}>{num} Star{num !== 1 ? 's' : ''}</option>
-                    ))}
-                  </select>
-                  <span className="text-yellow-500 text-xl">{renderStars(newReview.rating)}</span>
+            {showReviewForm && (
+              <form onSubmit={handleSubmitReview} className="mb-8 p-4 border rounded-lg bg-white/70">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Rating</label>
+                  <div className="flex items-center">
+                    <select
+                      name="rating"
+                      value={newReview.rating}
+                      onChange={handleInputChange}
+                      className="p-2 border rounded mr-2"
+                    >
+                      {[1, 2, 3, 4, 5].map(num => (
+                        <option key={num} value={num}>{num} Star{num !== 1 ? 's' : ''}</option>
+                      ))}
+                    </select>
+                    <span className="text-yellow-500 text-xl">{renderStars(newReview.rating)}</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Your Review</label>
-                <textarea
-                  name="comment"
-                  value={newReview.comment}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded h-24"
-                  placeholder="Share your experience with this tentor?..."
-                  required
-                />
-              </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium mb-1">Your Review</label>
+                  <textarea
+                    name="comment"
+                    value={newReview.comment}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border rounded h-24"
+                    placeholder="Share your experience with this tentor?..."
+                    required
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-black rounded-full hover:bg-blue-700 transition"
-              >
-                Submit Review
-              </button>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-black rounded-full hover:bg-blue-700 transition"
+                >
+                  Submit Review
+                </button>
+              </form>
+            )}
+          </>
+        ) : (
+          <p className="text-sm text-gray-500 italic mb-4">Heee~ yang udah bikin review gabisa bikin lagi</p>
+        )}
+
 
           {displayedReviews.length > 0 ? (
             displayedReviews.map(review => (
