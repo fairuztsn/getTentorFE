@@ -173,7 +173,7 @@ export default function RegisterForm() {
       localStorage.setItem("token", token);
 
       // 5. Redirect success
-      setSuccessMessage("Registrasi berhasil! Mengalihkan ke halaman dashboard...");
+      setSuccessMessage("Registrasi berhasil!");
       setTimeout(() => {
         navigate("/");
       }, 2000);

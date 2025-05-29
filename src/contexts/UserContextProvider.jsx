@@ -1,3 +1,4 @@
+// src/contexts/UserContextProvider.jsx
 import { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate(); // buat auto-redirect logout
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,11 +18,11 @@ export const UserProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token);
 
-        // Cek if token expired
+        // Check if token expired
         if (decoded.exp * 1000 < Date.now()) {
           localStorage.removeItem("token");
           setUser(null);
-          navigate("/login"); // redirect logout
+          navigate("/login");
         } else {
           axios
             .get("http://localhost:8080/api/auth/me", {
@@ -30,12 +31,21 @@ export const UserProvider = ({ children }) => {
               },
             })
             .then((res) => {
+              // Extract all necessary fields from response
+              const userData = res.data;
               setUser({
                 id: decoded.sub,
                 email: decoded.email,
                 role: decoded.role,
-                name: decoded.nama,
-                fotoUrl: res.data.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
+                name: decoded.nama, // Use nama from token
+                fotoUrl: userData.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
+                // Add profile-specific fields
+                ipk: userData.ipk || null,
+                noTelp: userData.noTelp || '',
+                pengalaman: userData.pengalaman || '',
+                listMataKuliah: userData.listMataKuliah || [],
+                // Add NIM if available
+                nim: userData.nim || ''
               });
               setLoading(false);
             })
@@ -46,20 +56,21 @@ export const UserProvider = ({ children }) => {
               navigate("/login");
               setLoading(false);
             });
-
         }
       } catch (err) {
         console.error("Token tidak valid", err);
         localStorage.removeItem("token");
         setUser(null);
         navigate("/login");
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, [navigate]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
