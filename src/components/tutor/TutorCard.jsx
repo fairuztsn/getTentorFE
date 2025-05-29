@@ -1,20 +1,20 @@
 import { useNavigate } from "react-router-dom";
 
 // src/components/TutorCard.jsx
-const TutorCard = ({ id, image, name, subjects }) => {
+const TutorCard = ({ id, image, name, subjects, averageRating }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
       <img
         src={image}
         alt={name}
-        className="rounded-lg w-full h-40 object-cover"
+        className="rounded-lg w-full h-50 object-cover"
       />
 
-      <h2 className="text-lg font-semibold mt-2">{name}</h2>
+      <h2 className="text-lg font-semibold mt-5">{name}</h2>
 
       {/* Subject Tags */}
-      <div className="flex flex-wrap gap-1 mt-2 min-h-[48px]">
+      <div className="flex flex-wrap gap-1 mt-5 min-h-[48px]">
         {subjects.slice(0, 3).map((subject, idx) => (
           <span
             key={idx}
@@ -32,10 +32,10 @@ const TutorCard = ({ id, image, name, subjects }) => {
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-sm">⭐ 5.0/5.0</div>
+      <div className="mt-2 text-sm mt-5">⭐ {`${averageRating}`}/5.0</div>
 
       {/* Action Button */}
-      <button className="mt-auto w-full bg-blue text-white py-1 rounded hover:bg-blue-600" onClick={() => navigate(`/tentor/${id}`)}>
+      <button className="w-full bg-blue text-white py-1 rounded hover:bg-blue-600 mt-5" onClick={() => navigate(`/tentor/${id}`)}>
         Lihat Tentor
       </button>
     </div>

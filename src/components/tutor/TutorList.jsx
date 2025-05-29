@@ -55,7 +55,7 @@ const TutorList = () => {
               )
             }
             
-            averageRating={tentor.averageRating}/>
+            averageRating={tentor.averageRating.toFixed(1)}/>
         ))}
       </div>
     </section>
