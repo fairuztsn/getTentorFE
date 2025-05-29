@@ -61,7 +61,9 @@ const TutorList = () => {
               .map(
                 mk => mk.nama
               )
-            }/>
+            }
+            
+            averageRating={tentor.averageRating}/>
         ))}
       </div>
     </section>
