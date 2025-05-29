@@ -25,15 +25,15 @@ export default function TutorProfile() {
         });
         const data = response.data;
         setTentor({
-          name: data.nama,
-          position: "Tentor @ getTentor",
-          experience: "",//"5+ years of experience in software development",
-          rating: `${data.averageRating.toFixed(1)} (${data.ratingCount} Reviews)`,// "5.0 (254 Reviews)",
+          name: data.mahasiswa.nama,
+          position: "Principal Software Engineer Manager @ Microsoft",
+          experience: "5+ years of experience in software development",
+          rating: data.averageRating,// "5.0 (254 Reviews)",
           location: "Jakarta - Kelapa Gading",
           email: data.email,
           phone: data.noTelp,
-          about: `${data.pengalaman.join(", ")}`,//"With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
-          skills: data.listMataKuliah.map(mk => mk.nama),
+          about: "With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
+          skills: ["Lorem", "Ipsum"],
           profilePictureUrl: data.fotoUrl,
         });
       } catch (error) {
@@ -99,7 +99,7 @@ export default function TutorProfile() {
   const [reviews, setReviews] = useState(initialReviews);
 
   const maxLength = 150;
-  const canExpand = tentor?.about?.length > maxLength;
+  const canExpand = true; //tentor?.about?.length > maxLength;
   // const displayText = isExpanded ? tentor?.about : `${tentor?.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   const handleInputChange = (e) => {
@@ -239,6 +239,11 @@ export default function TutorProfile() {
           <button
             className="w-full px-4 py-2 border rounded-full hover:bg-gray-100 transition bg-white/50 backdrop-blur-sm mb-6"
             onClick={() => {
+              if (!currentUser) {
+                alert("Please login to submit a review");
+                navigate("/login");
+                return;
+              }
               setShowReviewForm(!showReviewForm);
             }}
           >

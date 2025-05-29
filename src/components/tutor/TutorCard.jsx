@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 // src/components/TutorCard.jsx
-const TutorCard = ({ id, image, name, subjects, averageRating }) => {
+const TutorCard = ({ id, image, name, subjects }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-lg shadow-md p-4 w-60 flex flex-col h-full">
@@ -32,7 +32,7 @@ const TutorCard = ({ id, image, name, subjects, averageRating }) => {
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-sm">⭐ {`${averageRating.toFixed(1)}`}/5.0</div>
+      <div className="mt-2 text-sm">⭐ 5.0/5.0</div>
 
       {/* Action Button */}
       <button className="mt-auto w-full bg-blue text-white py-1 rounded hover:bg-blue-600" onClick={() => navigate(`/tentor/${id}`)}>
