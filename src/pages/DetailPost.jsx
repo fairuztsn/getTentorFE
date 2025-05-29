@@ -273,7 +273,7 @@ export default function TutorProfile() {
                     <li
                       key={idx}
                       className="bg-white/50 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg shadow-sm
-                                hover:shadow-md active:scale-95 transition-all duration-200"
+                                hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
                     >
                       {point}
                     </li>
