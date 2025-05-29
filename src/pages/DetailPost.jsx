@@ -15,61 +15,70 @@ export default function TutorProfile() {
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
 
   useEffect(() => {
-    const fetchTentorData = async() => {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/tentors/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        const data = response.data;
-        
-        setTentor({
-          name: data.nama,
-          position: "Tentor @ getTentor",
-          experience: "",//"5+ years of experience in software development",
-          rating: `${data.averageRating.toFixed(1)} (${data.ratingCount} Reviews)`,// "5.0 (254 Reviews)",
-          location: "Jakarta - Kelapa Gading",
-          email: data.email,
-          phone: data.noTelp,
-          about: `${data.pengalaman.join(", ")}`,//"With 4+ years of experience in the industry, I have worked as a tester, a lead/manager, and as a developer. I have worked on large teams (OneDrive, Power Automate), as well as taking a v1 product from inception to running at a global scale. Additionally, I specialize in mentoring junior developers and creating comprehensive learning programs tailored to individual needs. My approach focuses on practical, real-world applications of theoretical concepts to ensure my students are well-prepared for professional environments.",
-          skills: data.listMataKuliah.map(mk => mk.nama),
-          profilePictureUrl: data.fotoUrl,
-        });
-      } catch (error) {
-        alert('Error! Baca console pls');
-        console.error(error);
-      }
-    }
-
-    const fetchReviews = async() => {
-      const response = await axios.get(`http://localhost:8080/api/reviews/tentor/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+    if (!id) return;
+  
+    axios.get(`http://localhost:8080/api/tentors/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      const data = response.data;
+  
+      setTentor({
+        name: data.nama,
+        position: "Tentor @ getTentor",
+        experience: "",
+        rating: `${data.averageRating.toFixed(1)} (${data.ratingCount} Reviews)`,
+        location: "Jakarta - Kelapa Gading",
+        email: data.email,
+        phone: data.noTelp,
+        about: `${data.pengalaman.join(", ")}`,
+        skills: data.listMataKuliah.map(mk => mk.nama),
+        profilePictureUrl: data.fotoUrl,
       });
-
+    })
+    .catch(error => {
+      alert('Error! Baca console pls');
+      console.error(error);
+    });
+  
+    axios.get(`http://localhost:8080/api/reviews/tentor/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
       const transformedReviews = response.data.map(review => ({
         id: review.id,
-        userId: review.menteeId,
+        userId: review.mentee.id,
         name: review.reviewerNama,
         avatar: review.mentee.fotoUrl || 'http://localhost:8080/api/images/view/default-profile.png',
-        date: new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        date: new Date(review.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
         rating: review.rating,
-        comment: review.komentar
+        comment: review.komentar,
       }));
-    
+  
       setReviews(transformedReviews);
-      const hasReviewed = transformedReviews.some(review => review.userId === user?.id);
-      if(hasReviewed) {
+  
+      const hasReviewed = transformedReviews.some(review => review.userId === parseInt(user?.id));
+      if (hasReviewed) {
         setAlreadyReviewed(true);
       }
-    }
-
-    fetchTentorData();
-    fetchReviews();
+    })
+    .catch(error => {
+      alert('Error ambil review!');
+      console.error(error);
+    });
   }, [refresh]);
+
+  useState(() => {
+  
+  }, [reviews]);
   
   const navigate = useNavigate();
   
