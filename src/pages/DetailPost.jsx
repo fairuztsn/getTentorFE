@@ -99,7 +99,7 @@ export default function TutorProfile() {
   const [reviews, setReviews] = useState(initialReviews);
 
   const maxLength = 150;
-  const canExpand = true; //tentor?.about?.length > maxLength;
+  const canExpand = tentor?.about?.length > maxLength;
   // const displayText = isExpanded ? tentor?.about : `${tentor?.about.substring(0, maxLength)}${canExpand ? "..." : ""}`;
 
   const handleInputChange = (e) => {
