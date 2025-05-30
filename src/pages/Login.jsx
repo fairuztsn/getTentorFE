@@ -39,7 +39,7 @@ export default function LoginForm() {
         {/* Left Image */}
         <div className="hidden lg:block lg:w-1/2 overflow-hidden rounded-l-4xl h-auto">
           <img
-            src={`/public/images/Frame 7.png`}
+            src={`/images/Frame 7.png`}
             alt="Login Illustration"
             className="bg-blue w-full h-full object-cover"
             style={{ minHeight: "100%" }}

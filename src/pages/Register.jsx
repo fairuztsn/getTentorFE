@@ -191,7 +191,7 @@ export default function RegisterForm() {
       <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
         <div className="hidden lg:block lg:w-1/2 overflow-hidden rounded-l-2xl h-auto">
           <img
-            src={`/public/images/Frame 8.png`}
+            src={`/images/Frame 8.png`}
             alt="Register Illustration"
             className="bg-blue w-full h-full object-cover"
             style={{ minHeight: "100%" }}
