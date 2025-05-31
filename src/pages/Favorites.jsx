@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import Header from "@/components/Header";
 import TutorList from "@/components/tutor/TutorList";
 
-export default function Dashboard() {
+export default function Favorites() {
     const navigate = useNavigate();
 
     return (

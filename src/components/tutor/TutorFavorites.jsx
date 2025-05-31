@@ -41,8 +41,8 @@ const TutorFavorites = () => {
 
   return (
     <section className="mt-8 px-8">
-      <div className="m-5">
-        <h2 className='text-xl font-semibold text-white bg-blue'>
+      <div className="m-4">
+        <h2 className='text-xl font-semibold text-white bg-blue rounded-md px-6 py-1'>
             Tentor Favorit {user?.name}
         </h2>
       </div>
@@ -59,7 +59,7 @@ const TutorFavorites = () => {
             />
           ))
         ) : (
-          <div className="text-gray-500 text-sm">Belum ada tentor favorit</div>
+          <div className="text-gray-500 text-l">Belum ada tentor favorit</div>
         )}
       </div>
     </section>

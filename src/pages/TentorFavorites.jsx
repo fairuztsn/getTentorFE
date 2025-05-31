@@ -8,10 +8,6 @@ export default function TentorFavorites() {
   const navigate = useNavigate();
   const { user } = useUser();
 
-  if(user?.role !== "mentee") {
-    return "Not found";
-  }
-
   return (
       <>
         <Header />

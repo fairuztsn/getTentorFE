@@ -7,12 +7,6 @@ import { useUser } from "@/contexts/UserContextProvider";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    }
-
     const { user } = useUser();
 
     return (
@@ -26,13 +20,6 @@ export default function Dashboard() {
             </> : <>
               <TutorList />
             </>}
-            <button
-              type="button"
-              className="mt-5 w-full py-3 px-6 text-white bg-red-500 hover:bg-red-600 rounded-lg font-semibold shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-400"
-              onClick={handleLogout}
-            >
-              {`Get me outta this place`}
-            </button>
           </div>
         </>
     )

@@ -9,10 +9,12 @@ const TutorList = () => {
   const q = searchParams.get("q"); 
 
   const [tentors, setTentors] = useState([]);
+  const [loading, setLoading] = useState(true); // State to manage loading status
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
+        setLoading(true); // Set loading state to true before fetching data
         let response;
 
         if(!q) {
@@ -33,6 +35,8 @@ const TutorList = () => {
       } catch (error) {
         alert('Error! Baca console pls');
         console.error(error);
+      } finally {
+        setLoading(false); // Set loading state to false after fetching data
       }
     };
 
@@ -41,7 +45,18 @@ const TutorList = () => {
 
   return (
     <section className="mt-8 px-8">
-      <h2 className="text-xl font-semibold mb-4 text-blue">Tentor Tersedia</h2>
+      <h2 className="text-3xl font-semibold mb-4 text-blue">
+        {q ? `Hasil Pencarian untuk "${q}"` : 'Daftar Tentor Tersedia'}
+      </h2>
+
+      {loading && (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue"></div>
+        </div>
+      )}
+      {!loading && tentors.length === 0 && (
+        <p className="text-center text-gray-500">Tidak ada tentor yang ditemukan.</p>
+      )}
       <div className="flex flex-wrap gap-6 justify-center items-center">
         {tentors.map((tentor, idx) => (
           <TutorCard 
