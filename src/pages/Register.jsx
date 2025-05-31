@@ -381,7 +381,7 @@ export default function RegisterForm() {
                   <button
                     type="button"
                     onClick={addExperienceField}
-                    className="mt-1 text-blue-500 text-sm hover:underline"
+                    className="mt-1 text-blue text-sm hover:underline"
                   >
                     + Tambah pengalaman
                   </button>
