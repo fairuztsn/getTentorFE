@@ -14,9 +14,11 @@ const isValidPhoneNumber = (number) => {
 };
 
 const isValidGPA = (gpa) => {
-  // Hanya angka desimal dari 0.0 sampai 4.0, maksimal dua angka di belakang koma
+  // Hanya angka desimal dari 0.00 sampai 4.00, maksimal dua angka di belakang koma
   return /^([0-3](\.\d{1,2})?|4(\.0{1,2})?)$/.test(gpa);
 };
+
+const isValidFullName = (name) => /^[A-Za-zÀ-ÿ ']+$/.test(name.trim());
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
@@ -60,8 +62,18 @@ export default function RegisterForm() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!isNumeric(formData.nim) || parseInt(formData.nim) <= 0) {
-      setErrorMessage("NIM harus berupa angka positif.");
+    if (!formData.nim || !isNumeric(formData.nim) || parseInt(formData.nim) <= 0 ) {
+      setErrorMessage("NIM harus diisi dan berupa angka positif.");
+      return;
+    }
+
+    if (formData.nim.length > 12) {
+      setErrorMessage("NIM maksimal 12 digit.");
+      return;
+    }
+
+    if (!isValidFullName(formData.fullName)) {
+      setErrorMessage("Nama lengkap hanya boleh berisi huruf dan spasi.");
       return;
     }
 
@@ -117,8 +129,9 @@ export default function RegisterForm() {
     try {
       if (role === "tentor") {
         // Validasi Format input GPA
+        const gpacoma = formData.gpa.replace(",", ".");
         if (!isValidGPA(formData.gpa)) {
-          setErrorMessage("IPK harus berupa angka antara 0.0 hingga 4.0.");
+          setErrorMessage("IPK harus berupa angka antara 0.00 hingga 4.00 (gunakan titik sebagai pemisah desimal).");
           return;
         }
         // Validasi pengalaman hanya jika ada lebih dari satu field pengalaman
@@ -140,7 +153,7 @@ export default function RegisterForm() {
         noTelp: formData.phoneNumber,
         ipk: formData.gpa,
         pengalaman: formData.experience.map(e => e.trim()), // TODO: Handle delimeter or toList or toString
-        fotoUrl: formData.profilePicture?.name
+        fotoUrl: formData.profilePicture ? formData.profilePicture.name : null
       };
 
       // 1. Register dulu
@@ -154,7 +167,6 @@ export default function RegisterForm() {
       const token = registerResponse.data.token;
   
       // 3. Upload image if Tentor dan ada file
-      // TODO: If tentor and profile pict null then pake default image
       if (role === "tentor" && formData.profilePicture && formData.profilePicture instanceof File) {
         const formToUpdate = new FormData();
         formToUpdate.append("file", formData.profilePicture);
@@ -176,7 +188,7 @@ export default function RegisterForm() {
       // 5. Redirect success
       setSuccessMessage("Registrasi berhasil!");
       setTimeout(() => {
-        navigate("/");
+        navigate(role === "tentor" ? "/profile" : "/");
       }, 2000);
   
     } catch (error) {
@@ -246,6 +258,7 @@ export default function RegisterForm() {
                     placeholder="Masukkan NIM"
                     value={formData.nim}
                     onChange={handleInputChange}
+                    maxLength={12}
                     required
                   />
                 </div>

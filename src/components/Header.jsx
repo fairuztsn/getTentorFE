@@ -26,9 +26,15 @@ const Header = () => {
           src={`/images/gettentor.png`}
           alt="logo"
           className="w-64 h-12"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            if (user?.role === 'tentor') {
+              navigate('/profile'); // atau halaman khusus tentor
+            } else {
+              navigate('/'); // dashboard mentee
+            }
+          }}
           style={{ cursor: 'pointer' }}
-        />
+          />
       </div>
       <div className="flex items-center space-x-4">
         {user?.role !== "tentor" && (

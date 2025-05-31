@@ -25,7 +25,7 @@ export default function LoginForm() {
       localStorage.setItem("token", token);
       setSuccessMessage("Login berhasil!");
       setTimeout(() => {
-        navigate("/");
+        navigate(role === "tentor" ? "/profile" : "/");
       }, 2000);
     } catch (error) {
       const message = error.response?.data?.error || error.message || "Login gagal. Silakan coba lagi.";
