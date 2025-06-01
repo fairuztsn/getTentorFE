@@ -117,12 +117,12 @@ const HomepageNonLogin = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-sky-200 text-black h-40 px-6">
-        <div className="max-w-6xl mx-auto h-full flex flex-col md:flex-row justify-between items-center gap-6 py-6">
+      <footer className="bg-sky-200 text-black px-6 py-8">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
 
           {/* Kiri: About Us + Narasi */}
-          <div className="flex flex-col justify h-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-2 text-left">About Us</h2>
+          <div className="w-full md:w-1/2">
+            <h2 className="text-2xl font-semibold mb-2 text-center md:text-left">About Us</h2>
             <p className="text-sm text-gray-800 text-justify">
               GetTentor is dedicated to connecting students with the best tutors 
               for personalized and effective learning experiences. Our mission is 
@@ -131,8 +131,8 @@ const HomepageNonLogin = () => {
           </div>
 
           {/* Kanan: Ikon Sosial + Copyright */}
-          <div className="flex flex-col items-center md:items-end gap-3">
-            <div className="flex gap-5 text-xl">
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-end gap-3">
+            <div className="flex justify-center md:justify-end gap-5 text-xl w-full">
               <a href="#" aria-label="Facebook" className="hover:text-blue transition-colors">
                 <i className="fab fa-facebook-f" />
               </a>
@@ -146,16 +146,13 @@ const HomepageNonLogin = () => {
                 <i className="fab fa-linkedin-in" />
               </a>
             </div>
-            <p className="text-xs text-gray-700 mt-1">
+            <p className="text-xs text-gray-700 text-center md:text-right w-full">
               &copy; {new Date().getFullYear()} GetTentor. All rights reserved.
             </p>
           </div>
 
         </div>
       </footer>
-
-
-
 
 
     </div>
