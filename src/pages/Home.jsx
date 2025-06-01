@@ -1,73 +1,163 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
 const HomepageNonLogin = () => {
   return (
-    <div>
-      <header className="bg-blue-100 p-4 flex justify-between items-center">
-        <img src="/logo.svg" alt="GetTentor Logo" className="h-10" />
+    <div className="min-h-screen flex flex-col font-sans bg-white">
+      {/* Header */}
+      <header className="bg-sky-200 p-4 px-6 text-white flex justify-between items-center shadow-md">
+        <img src={`/images/gettentor.png`} alt="GetTentor Logo" className="h-10" />
         <div>
-          <button className="bg-white text-black font-bold px-4 py-2 rounded mr-2">Register</button>
-          <button className="bg-blue-500 text-white font-bold px-4 py-2 rounded">Login</button>
+          <Link to="/register">
+            <button className="bg-white text-black font-bold px-5 py-2 rounded mr-3 shadow hover:bg-gray-100 transition">
+              Register
+            </button>
+          </Link>
+          <Link to="/login">
+            <button className="bg-blue text-white font-bold px-5 py-2 rounded shadow hover:bg-blue transition">
+              Login
+            </button>
+          </Link>
         </div>
       </header>
 
-      <main className="p-8">
-        <section className="flex flex-col md:flex-row items-center mb-16">
-          <img src="/hero-image.jpg" alt="Hero" className="w-full md:w-1/2 rounded-lg mb-6 md:mb-0" />
-          <div className="md:ml-8">
-            <h1 className="text-3xl font-bold mb-4">Tentoring dengan Pembimbing berdedikasi, ada di genggaman anda.</h1>
-            <p className="mb-4">Kesulitan dalam belajar? Ingin mempelajari bagaimana bisa belajar secara efektif? Tertarik mempelajari keterampilan yang banyak dicari? Bekerja cerdas dengan tentor online yang mendampingi Anda.</p>
-            <ul className="list-none space-y-2">
-              <li>✅ Tentor berpengalaman</li>
-              <li>✅ Jadwal tentoring fleksibel</li>
+      {/* Main Content */}
+      <main className="flex-1 p-8">
+        {/* Hero Section */}
+        <section className="flex flex-col md:flex-row items-center mb-20">
+          <div className="w-full md:w-1/2 flex justify-center">
+            <img
+              src={`/images/profile-image.png`}
+              alt="Hero"
+              className="object-cover w-full max-w-[400px] h-auto rounded-lg"
+            />
+          </div>
+          <div className="w-full md:w-1/2 text-left">
+            <h1 className="text-4xl font-bold mb-4">
+              Tentoring dengan Pembimbing berdedikasi, ada di genggaman anda.
+            </h1>
+            <p className="text-gray-700 mb-4 leading-relaxed">
+              Kesulitan dalam belajar? Ingin mempelajari bagaimana bisa belajar secara efektif? 
+              Tertarik mempelajari keterampilan yang banyak dicari? <br />
+              Bekerja cerdas dengan tentor online yang mendampingi Anda, yang menawarkan saran dan panduan 
+              ahli yang sesuai dengan semangat Anda. Jadilah tak terhentikan dengan <strong>GetTentor</strong>.
+            </p>
+            <ul className="flex flex-col gap-2 font-semibold text-xl">
+              <li className="flex items-center gap-2">
+                <img src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
+                Tentor berpengalaman
+              </li>
+              <li className="flex items-center gap-2">
+                <img src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
+                Jadwal tentoring fleksibel
+              </li>
             </ul>
           </div>
         </section>
 
-        <section className="text-center mb-16">
-          <h2 className="text-2xl font-bold mb-8">Temukan Tentor Ahli di Bidang Pilihan Anda!</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <img src="/tentor-tech.svg" alt="Tentor Tech" className="mx-auto h-24" />
-              <p className="mt-4 font-medium">Tentor Tech</p>
-            </div>
-            <div>
-              <img src="/tentor-matkul.svg" alt="Tentor Mata Kuliah" className="mx-auto h-24" />
-              <p className="mt-4 font-medium">Tentor Mata Kuliah</p>
-            </div>
-            <div>
-              <img src="/tentor-design.svg" alt="Tentor Design" className="mx-auto h-24" />
-              <p className="mt-4 font-medium">Tentor Design</p>
-            </div>
+        {/* Tentor Cards */}
+        <section className="text-center mb-20">
+          <h2 className="text-2xl font-bold mb-10">
+            Temukan Tentor Ahli di Mata Kuliah Pilihan Anda!
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            {[
+              { img: '/images/coding.jpg', label: 'Coding' },
+              { img: '/images/math.jpg', label: 'Math' },
+              { img: '/images/design.jpg', label: 'Design' },
+            ].map((item, index) => (
+              <div key={index}>
+                <img
+                  src={item.img}
+                  alt={item.label}
+                  className="mx-auto h-60 w-auto rounded-md hover:scale-105 transition-transform duration-300"
+                />
+                <p className="mt-2 text-lg font-semibold">{item.label}</p>
+              </div>
+            ))}
+          </div>
+
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-blue text-white p-10 rounded-lg mb-20 text-justify">
+          <h2 className="text-3xl font-bold mb-4">Bergabunglah dengan Komunitas GetTentor & mulai perjalanan pembelajaran anda!</h2>
+          <p className="text-lg mb-6">
+            Siap memulai perjalanan belajar dan pengembangan diri Anda? Temukan mentor berpengalaman yang siap membimbing Anda mencapai tujuan. Login atau Daftar sekarang untuk mulai pencarian mentor yang paling sesuai dengan kebutuhan Anda dan wujudkan potensi terbaik Anda bersama mereka.
+          </p>
+
+          <div className="flex items-center space-x-8">
+            <Link to="/login">
+              <button className="bg-sky-300 text-black px-8 py-3 rounded-lg font-bold hover:bg-sky-200 transition">
+                Login
+              </button>
+            </Link>
+            <p className="text-white text-base whitespace-nowrap">
+              belum punya akun?{' '}
+              <Link to="/register" className="text-orange-300 font-semibold hover:underline">
+                Daftar di sini
+              </Link>
+            </p>
           </div>
         </section>
 
-        <section className="bg-blue-600 text-white p-8 rounded-lg text-center mb-16">
-          <h2 className="text-xl font-bold mb-4">Start your own learning journey!</h2>
-          <p className="mb-4">Siap memulai perjalanan belajar dan pengembangan diri Anda? Login atau Daftar sekarang.</p>
-          <button className="bg-white text-blue-600 font-bold px-6 py-2 rounded">Login</button>
-          <p className="mt-4">belum punya akun? <a href="#" className="text-yellow-300">Daftar di sini</a></p>
-        </section>
 
-        <section className="bg-green-100 p-6 rounded-lg">
-          <div className="mb-2 text-yellow-500 text-xl">★★★★★</div>
-          <blockquote>
-            <p className="italic">“Memiliki akses ke pengetahuan dan pengalaman para tentor di GetTentor adalah kesempatan emas yang tidak boleh saya lewatkan...”</p>
-            <footer className="mt-2 font-semibold">Brian Musangking - Mentee</footer>
-          </blockquote>
+
+
+
+        {/* Testimonial Section */}
+        <section className="max-w-3xl mx-auto bg-green-100 p-8 rounded-lg text-center shadow-md mb-16">
+          <div className="text-yellow-500 text-xl mb-3">★★★★★</div>
+          <p className="text-gray-800 text-md italic mb-4">
+            “Memiliki akses ke pengetahuan dan pengalaman para tentor di GetTentor adalah kesempatan emas yang tidak boleh saya lewatkan. 
+            Berkat tentor saya, saya bisa mempelajari dan menguasai skill AI dengan mudah.”
+          </p>
+          <p className="text-green-800 font-semibold">Brian Musangking</p>
+          <p className="text-gray-600 text-sm">Mentee</p>
         </section>
       </main>
 
-      <footer className="bg-blue-100 p-4 text-center">
-        <img src="/logo.svg" alt="Logo" className="mx-auto h-8 mb-2" />
-        <p className="mb-2">Tempat terpercaya Anda untuk terhubung dengan tentor & profesional terbaik.</p>
-        <div className="flex justify-center gap-4 text-xl">
-          <i className="fab fa-facebook"></i>
-          <i className="fab fa-instagram"></i>
-          <i className="fab fa-twitter"></i>
-          <i className="fab fa-linkedin"></i>
+      {/* Footer */}
+      <footer className="bg-sky-200 text-black h-40 px-6">
+        <div className="max-w-6xl mx-auto h-full flex flex-col md:flex-row justify-between items-center gap-6 py-6">
+
+          {/* Kiri: About Us + Narasi */}
+          <div className="flex flex-col justify h-full max-w-md">
+            <h2 className="text-2xl font-semibold mb-2 text-left">About Us</h2>
+            <p className="text-sm text-gray-800 text-justify">
+              GetTentor is dedicated to connecting students with the best tutors 
+              for personalized and effective learning experiences. Our mission is 
+              to empower education through trusted mentorship.
+            </p>
+          </div>
+
+          {/* Kanan: Ikon Sosial + Copyright */}
+          <div className="flex flex-col items-center md:items-end gap-3">
+            <div className="flex gap-5 text-xl">
+              <a href="#" aria-label="Facebook" className="hover:text-blue transition-colors">
+                <i className="fab fa-facebook-f" />
+              </a>
+              <a href="#" aria-label="Instagram" className="hover:text-pink-600 transition-colors">
+                <i className="fab fa-instagram" />
+              </a>
+              <a href="#" aria-label="Twitter" className="hover:text-blue transition-colors">
+                <i className="fab fa-twitter" />
+              </a>
+              <a href="#" aria-label="LinkedIn" className="hover:text-blue transition-colors">
+                <i className="fab fa-linkedin-in" />
+              </a>
+            </div>
+            <p className="text-xs text-gray-700 mt-1">
+              &copy; {new Date().getFullYear()} GetTentor. All rights reserved.
+            </p>
+          </div>
+
         </div>
       </footer>
+
+
+
+
+
     </div>
   );
 };

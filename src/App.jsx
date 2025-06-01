@@ -6,7 +6,8 @@ import NotFound from '@/components/errors/NotFound.jsx';
 import PrivateRoute from './components/PrivateRoute';
 import Dashboard from '@/pages/Dashboard';
 import Profile from "@/pages/Profile.jsx";
-import TentorFavorites from './pages/TentorFavorites';
+import TentorFavorites from '@/pages/TentorFavorites';
+import Home from '@/pages/Home';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DetailPost from './pages/DetailPost';
@@ -17,10 +18,11 @@ function App() {
     <BrowserRouter>
       <UserProvider>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register/>} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <PrivateRoute>
                 <Dashboard />
@@ -28,7 +30,7 @@ function App() {
             }
           />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <PrivateRoute>
                 <Dashboard />
