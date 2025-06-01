@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom';
+import Dashboard from '@/pages/Dashboard.jsx';
 
 const HomepageNonLogin = () => {
+  const token = localStorage.getItem('token');
+  const isAuthenticated = token !== null && token !== '';
+
+  if(isAuthenticated) {
+    return <Dashboard/>
+  }
+  
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white">
       {/* Header */}
