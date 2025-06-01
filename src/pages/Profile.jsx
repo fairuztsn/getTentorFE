@@ -20,6 +20,7 @@ export default function Profile() {
   const [editForm, setEditForm] = useState(null);
   const [selectedMataKuliahId, setSelectedMataKuliahId] = useState(""); 
   const [allMataKuliah, setAllMataKuliah] = useState([]);
+  const [favoriteList, setFavoriteList] = useState([]);
   const fileInputRef = useRef(null);
 
   const token = localStorage.getItem('token');
@@ -63,13 +64,28 @@ export default function Profile() {
     };
   
     fetchUserData();
+
+    if(user.role === "mentee") {
+      axios.get(`${BACKEND_URL}/api/favorites/${user?.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        setFavoriteList(response.data);
+      })
+      .catch(error => {
+        alert('Error ngambil favorit');
+        console.error(error);
+      });
+    }
   }, [user, role]);  
 
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/mata-kuliah`)
     .then(response => {
       setAllMataKuliah(response.data)
-    })
+    });
   }, [])
 
   useEffect(() => {
@@ -491,11 +507,36 @@ export default function Profile() {
                     
                     <div className="bg-white/70 border rounded-lg p-4 backdrop-blur-sm shadow">
                       <h3 className="text-2xl font-bold mb-4">Tentor Favorit</h3>
-                      <p className="text-gray-700">
-                        {editForm?.favoriteTentor 
-                          ? `Tentor favoritmu: ${editForm?.favoriteTentor}`
-                          : "Kamu belum memilih tentor favorit"}
-                      </p>
+                      <div className="text-gray-700">
+                      {favoriteList.length > 0 ? (
+                        <>
+                          {favoriteList.slice(0, 3).map((item, idx) => (
+                            <div key={idx}>
+                              <p
+                                className="bg-white/50 backdrop-blur-sm border border-gray-200 px-4 py-2 rounded-lg shadow-sm
+                                  hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer m-3"
+                                onClick={() => navigate(`/tentor/${item.id}`)}
+                              >
+                                {item.nama}
+                              </p>
+                            </div>
+                          ))}
+                          {favoriteList.length > 3 && (
+                            <div className="text-center">
+                            <p>...</p>
+                            <button
+                              onClick={() => navigate("/profile/favorites")}
+                              className="mt-2 text-blue hover:underline"
+                            >
+                              Lihat lebih
+                            </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        "Kamu belum memilih tentor favorit"
+                      )}
+                    </div>
                     </div>
                   </div>
                 )}

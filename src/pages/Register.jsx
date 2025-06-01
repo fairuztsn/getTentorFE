@@ -54,6 +54,7 @@ export default function RegisterForm() {
   
       setFormData(prev => ({ ...prev, [name]: file }));
     } else {
+      if (name === 'nim' && value.length > 12) return;
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };

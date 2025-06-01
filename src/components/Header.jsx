@@ -12,9 +12,6 @@ const Header = () => {
     // Hapus token dari localStorage atau cookie
     localStorage.removeItem("token");
 
-    // Hapus user dari context
-    setUser(null);
-
     // Arahkan ke halaman login atau landing page
     navigate("/login");
   };
