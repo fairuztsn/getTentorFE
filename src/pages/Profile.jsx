@@ -192,7 +192,7 @@ export default function Profile() {
       return;
     }
 
-    if (!isValidGPA(editForm.ipk)) {
+    if (user?.role === "tentor" && !isValidGPA(editForm.ipk)) {
       setErrorMessage("IPK harus berupa angka antara 0.00 hingga 4.00 (gunakan titik sebagai pemisah desimal).");
       return;
     }
@@ -333,13 +333,13 @@ export default function Profile() {
                         <div>
                           <label className="font-medium text-gray-700 block mb-1">IPK:</label>
                           <input
-                            type="number"
+                            type="text"
                             name="ipk"
                             value={editForm.ipk}
                             onChange={handleEditChange}
-                            min="0"
-                            max="4"
-                            step="0.01"
+                            // min="0"
+                            // max="4"
+                            // step="0.01"
                             className="p-2 border rounded w-24"
                           />
                         </div>
