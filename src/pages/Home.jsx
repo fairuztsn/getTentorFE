@@ -13,7 +13,7 @@ const HomepageNonLogin = () => {
     <div className="min-h-screen flex flex-col font-sans bg-white">
       {/* Header */}
       <header className="bg-sky-200 p-4 px-6 text-white flex justify-between items-center shadow-md">
-        <img src={`/images/gettentor.png`} alt="GetTentor Logo" className="h-10" />
+        <img crossOrigin="anonymous" src={`/images/gettentor.png`} alt="GetTentor Logo" className="h-10" />
         <div>
           <Link to="/register">
             <button className="bg-white text-black font-bold px-5 py-2 rounded mr-3 shadow hover:bg-gray-100 transition">
@@ -51,11 +51,11 @@ const HomepageNonLogin = () => {
             </p>
             <ul className="flex flex-col gap-2 font-semibold text-xl">
               <li className="flex items-center gap-2">
-                <img src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
+                <img crossOrigin="anonymous" src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
                 Tentor berpengalaman
               </li>
               <li className="flex items-center gap-2">
-                <img src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
+                <img crossOrigin="anonymous" src={`/images/check-symbol-isolated.png`} alt="Check" className="w-10 h-10" />
                 Jadwal tentoring fleksibel
               </li>
             </ul>

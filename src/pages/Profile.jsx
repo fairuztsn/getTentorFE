@@ -6,6 +6,16 @@ import { useUser } from "@/contexts/UserContextProvider";
 import axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
+const isValidFullName = (name) => /^[A-Za-zÀ-ÿ ']+$/.test(name.trim());
+const isValidPhoneNumber = (number) => {
+  // Format: 08xxxxxxxxxx, hanya angka, panjang 10-12 karakter
+  return /^[0-9]{10,12}$/.test(number);
+};
+
+const isValidGPA = (gpa) => {
+  // Hanya angka desimal dari 0.00 sampai 4.00, maksimal dua angka di belakang koma
+  return /^([0-3](\.\d{1,2})?|4(\.0{1,2})?)$/.test(gpa);
+};
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -19,6 +29,7 @@ export default function Profile() {
   const [initialEditForm, setInitialEditForm] = useState(null);
   const [editForm, setEditForm] = useState(null);
   const [selectedMataKuliahId, setSelectedMataKuliahId] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
   const [allMataKuliah, setAllMataKuliah] = useState([]);
   const [favoriteList, setFavoriteList] = useState([]);
   const fileInputRef = useRef(null);
@@ -171,6 +182,21 @@ export default function Profile() {
   };
 
   const handleSave = () => {
+    if (!isValidFullName(editForm.name)) {
+      setErrorMessage("Nama lengkap hanya boleh berisi huruf dan spasi.");
+      return;
+    }
+
+    if (!isValidPhoneNumber(editForm.noTelp)) {
+      setErrorMessage("Nomor telepon tidak valid. Gunakan 10-13 digit angka.");
+      return;
+    }
+
+    if (!isValidGPA(editForm.ipk)) {
+      setErrorMessage("IPK harus berupa angka antara 0.00 hingga 4.00 (gunakan titik sebagai pemisah desimal).");
+      return;
+    }
+
     const formData = new FormData();
     if(editForm.fileFoto) {
       formData.append('file', editForm.fileFoto);
@@ -225,7 +251,12 @@ export default function Profile() {
       <div className="bg-white bg-cover bg-center font-sans min-h-screen">
         <Header />
         <div className="max-w-4xl mx-auto">
-          <div className="relative">      
+          <div className="relative">
+          {(errorMessage && isEditing) && (
+              <div className="mt-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {errorMessage}
+              </div>
+            )}
             <div className="relative flex items-start px-4 pt-4 pb-8 gap-6">
               <div className="relative -mt-[-20px]">
                 {isEditing ? (

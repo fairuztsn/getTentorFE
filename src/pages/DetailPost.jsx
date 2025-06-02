@@ -268,7 +268,7 @@ export default function TutorProfile() {
 
           <div className="space-y-6">
             <div className="flex items-center gap-4 flex-wrap">
-              <img src="/images/book.png" alt="Skills" className="h-10 w-10" />
+              <img crossOrigin="anonymous" src="/images/book.png" alt="Skills" className="h-10 w-10"/>
               {tentor?.skills.map((skill, index) => (
                 <span
                   key={index}

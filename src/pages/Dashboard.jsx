@@ -9,6 +9,10 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const { user } = useUser();
 
+    if(user?.role === "tentor") {
+      navigate("/profile");
+    }
+
     return (
         <>
           <Header />
