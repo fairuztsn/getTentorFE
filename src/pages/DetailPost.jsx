@@ -56,7 +56,7 @@ export default function TutorProfile() {
         id: review.id,
         userId: review.mentee.id,
         name: review.reviewerNama,
-        avatar: review.mentee.fotoUrl || `${BACKEND_URL}/api/images/view/default-profile.png`,
+        avatar: review.mentee.fotoUrl || `default-profile.png`,
         date: new Date(review.createdAt).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -65,6 +65,8 @@ export default function TutorProfile() {
         rating: review.rating,
         comment: review.komentar,
       }));
+
+      console.log(response.data);
   
       setReviews(transformedReviews);
   
